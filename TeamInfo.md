@@ -10,8 +10,8 @@
 | Captain  |                       |
 | Member1  | Bose Pramuanpornsatid |
 | Member1  | bp17@illinois.edu     |
-| Member2  |                       |
-| Member2  |                       |
+| Member2  | Amy Bisalputra        |
+| Member2  | tb23@illinois.edu     |
 | Member3  |                       |
 | Member3  |                       |
 
