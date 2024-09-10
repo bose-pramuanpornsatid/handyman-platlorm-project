@@ -12,8 +12,8 @@
 | Member1  | bp17@illinois.edu     |
 | Member2  | Amy Bisalputra        |
 | Member2  | tb23@illinois.edu     |
-| Member3  |                       |
-| Member3  |                       |
+| Member3  | Hieu Nguyen           |
+| Member3  | hieunn2@illinois.edu  |
 
 ## Project Information
 
