@@ -6,8 +6,8 @@
 | -------- | --------------------- |
 | TeamID   | Team-067              |
 | TeamName | FallFun               |
-| Captain  |                       |
-| Captain  |                       |
+| Captain  | Daniel Zhou           |
+| Captain  | dtzhou2@illinois.edu  |
 | Member1  | Bose Pramuanpornsatid |
 | Member1  | bp17@illinois.edu     |
 | Member2  | Amy Bisalputra        |
