@@ -30,14 +30,10 @@
      1. [https://www.kaggle.com/datasets/arshkon/linkedin-job-postings](https://www.kaggle.com/datasets/arshkon/linkedin-job-postings)  
      2. [https://www.kaggle.com/datasets/emreksz/software-engineer-jobs-and-salaries-2024](https://www.kaggle.com/datasets/emreksz/software-engineer-jobs-and-salaries-2024)  
 7. Functionality:  
-   1. UI Mockup:
-
-![][image1]
+   1. UI Mockup:      ![alt text](UI_Mockup.jpg)
 
 8. Project Work Distribution:  
    1. Daniel: Backend, User Tracking and Database Management, Unit Testing  
       2. Hieu: Middleware, API Management, Ensuring that Front End matches with Backend for feature parity, Integration Testing and Work involving   
       3. Bose: Frontend, Frontend testing, creating pages involving job applications and filtering menus  
       4. Amy: Frontend, Frontend testing, creating pages involving user profiles and user personality management, UX/UI design, project vision leader. 
-   2. UI Mockup:
-      ![alt text](UI_Mockup.jpg)****
