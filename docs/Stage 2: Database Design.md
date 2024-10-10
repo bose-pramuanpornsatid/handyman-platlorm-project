@@ -28,11 +28,15 @@
 
   ## Relationships:
 
-* Application(User-Posting): It represents a many-to-many relationship because one user can submit their application to multiple postings, at the same time, one posting is associated with multiple applications from multiple users  
-* Interview questions(Company-Leetcode Problem): It represents a many-to-many relationship because one company can have multiple leetcode problems in the interview questions, at the same time, a leetcode problem can be used in the interview by multiple companies.  
-* College(User-School): It represents a one-to-many relationship because a user can only go to one school, but a school is associated with multiple users.  
-* Ownership(Posting-Employer/Companies): It represents a one-to-many relationship because each posting belongs to only one company, but each company can post multiple postings for different roles in the company.  
-* Recruiter(User-Employer/Companies): It represents a one-to-many relationship because each user belongs to only one company, but each company can be associated with multiple employees.
+- **Application (User-Posting)**: This represents a many-to-many relationship because one user can submit their application to multiple postings, while one posting can be associated with multiple applications from different users. This is necessary due to the application's requirements for flexibility in user applications, ensuring users can apply to multiple roles and companies can receive applications from many candidates.
+
+- **Interview Questions (Company-Leetcode Problem)**: This represents a many-to-many relationship because one company can have multiple Leetcode problems as interview questions, and a Leetcode problem can be used by multiple companies. This flexibility ensures companies have diverse ways to assess candidates and that problems can be used across different companies, which is a common scenario in tech hiring.
+
+- **College (User-School)**: This represents a one-to-many relationship because a user can only attend one school, but a school can be associated with multiple users. This constraint is based on the application requirement that a user profile can reflect only one current educational institution, simplifying the educational background data.
+
+- **Ownership (Posting-Employer/Companies)**: This represents a one-to-many relationship because each posting belongs to only one company, but each company can post multiple job listings for different roles. The constraint reflects the need for clear association between a posting and the company, which aids in managing job offers and employer-specific requirements.
+
+- **Recruiter (User-Employer/Companies)**: This represents a one-to-many relationship because each user can belong to only one company, but each company can be associated with multiple employees. This application constraint ensures that each user is linked to only one employer profile, which simplifies managing company-employee relationships.
 
 These assumptions arise from the fact that users have complex interactions with job application data. Each entity is designed to represent different components in the application process, making the database efficient and scalable. The relationships between entities show the connections between user’s applications, skills, and company roles, allowing a personalized feed and gamified user experience.
 
