@@ -151,25 +151,8 @@ A detailed description of the functionality that your website offers. This secti
   - **Where**: `posting_id`, `user_id`
   - **Action**: Withdraws a user's application from a job posting.
 
-#### Interview Questions (Company-Leetcode Problem Relationship):
 
-- **Create**:
-
-  - **Input**: `company_name`, `problem_id`
-  - **Action**: Links a Leetcode problem with a company for use in interviews.
-
-- **Read**:
-
-  - **Where**: `company_name` or `problem_id`
-  - **Action**: Retrieves information about which companies are using which problems.
-
-- **Delete**:
-
-  - **Where**: `company_name`, `problem_id`
-  - **Action**: Removes the link between a company and a Leetcode problem.
-
-
-9. Project Work Distribution:  
+1. Project Work Distribution:  
    1. Daniel: Backend, User Tracking and Database Management, Unit Testing  
       1. Hieu: Middleware, API Management, Ensuring that Front End matches with Backend for feature parity, Integration Testing and Work involving   
       2. Bose: Frontend, Frontend testing, creating pages involving job applications and filtering menus  
