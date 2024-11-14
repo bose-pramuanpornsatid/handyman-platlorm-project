@@ -1,0 +1,38 @@
+FROM node:18
+
+WORKDIR /usr/src/app
+
+# Copy in package.json
+COPY package*.json ./
+
+# Install dependencies 
+RUN npm ci
+RUN npm install express --save
+RUN npm install -g express-generator
+RUN npx express --view=ejs
+RUN npm install 
+RUN npm install mysql2 --save
+RUN npm install path --save
+RUN npm install serve -g
+RUN npm install -D vite
+RUN npm install vite-plugin-environment
+RUN npm install autoprefixer
+RUN npm install postcss-import
+RUN npm install tailwindcss
+RUN npm install react msw clsx
+RUN npm install react-dom
+RUN npm install react-router-dom
+
+# Copy source code
+COPY . .
+
+# Build source code
+RUN npm run
+
+# Correct Port Exposed
+EXPOSE 80
+
+# Run vite
+CMD /usr/src/app/node_modules/.bin/vite
+
+# CMD ["serve", "-p", "80", "-s", "dist"]
