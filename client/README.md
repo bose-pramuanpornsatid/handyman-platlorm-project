@@ -1,5 +1,9 @@
-# Create React App Vite [![Typecheck](https://github.com/laststance/create-react-app-vite/actions/workflows/typecheck.yml/badge.svg)](https://github.com/laststance/vite-react-ts-alter/actions/workflows/typecheck.yml) [![Test](https://github.com/laststance/create-react-app-vite/actions/workflows/test.yml/badge.svg)](https://github.com/laststance/create-react-app-vite/actions/workflows/test.yml) [![Build](https://github.com/laststance/create-react-app-vite/actions/workflows/build.yml/badge.svg)](https://github.com/laststance/create-react-app-vite/actions/workflows/build.yml) [![Lint](https://github.com/laststance/create-react-app-vite/actions/workflows/lint.yml/badge.svg)](https://github.com/laststance/create-react-app-vite/actions/workflows/lint.yml)
+Note:
+Remove dark mode in tailwind
+\b(dark:\S+)(?=")
 
+# Create React App Vite [![Typecheck](https://github.com/laststance/create-react-app-vite/actions/workflows/typecheck.yml/badge.svg)](https://github.com/laststance/vite-react-ts-alter/actions/workflows/typecheck.yml) [![Test](https://github.com/laststance/create-react-app-vite/actions/workflows/test.yml/badge.svg)](https://github.com/laststance/create-react-app-vite/actions/workflows/test.yml) [![Build](https://github.com/laststance/create-react-app-vite/actions/workflows/build.yml/badge.svg)](https://github.com/laststance/create-react-app-vite/actions/workflows/build.yml) [![Lint](https://github.com/laststance/create-react-app-vite/actions/workflows/lint.yml/badge.svg)](https://github.com/laststance/create-react-app-vite/actions/workflows/lint.yml)
+ 
 > Simple CRA style Vite teimpate.  
 > Create plain and lightweight React+TS programming environment.  
 > And a easy migration base for create-react-app to Vite.
@@ -95,3 +99,4 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+

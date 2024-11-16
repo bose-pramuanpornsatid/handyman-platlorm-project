@@ -1,14 +1,20 @@
-import type { PropsWithChildren } from 'react'
-import React from 'react'
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 
-import styles from './Layout.module.css'
+import Navbar from '../../components/Navbar';
+import styles from './Layout.module.css';
 
-const Layout: React.FC<PropsWithChildren> = ({ children, ...rest }) => {
+const Layout = () => {
   return (
-    <main className={styles.layout} {...rest}>
-      <div className={styles.container}>{children}</div>
-    </main>
-  )
-}
+    <>
+      <Navbar /> {/* Always displayed */}
+      <main className={styles.layout}>
+        <div className={styles.container}>
+          <Outlet /> {/* Renders child routes */}
+        </div>
+      </main>
+    </>
+  );
+};
 
-export default Layout
+export default Layout;
