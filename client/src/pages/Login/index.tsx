@@ -2,7 +2,7 @@ import React, { memo } from 'react'
 
 import styles from './index.module.css'
 
-const Template: React.FC = memo(() => (
+const Login: React.FC = memo(() => (
   <div className={styles.container}>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -77,6 +77,6 @@ const Template: React.FC = memo(() => (
       </div>
   </div>
 ))
-Template.displayName = 'Template'
+Login.displayName = 'Login'
 
-export default Template
+export default Login

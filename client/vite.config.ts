@@ -6,6 +6,7 @@ import EnvironmentPlugin from 'vite-plugin-environment'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './', // Ensures all paths are relative, especially useful for Firebase Hosting
   build: {
     sourcemap: true,
   },
@@ -20,4 +21,4 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-})
+});
