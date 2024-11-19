@@ -1,12 +1,12 @@
 from fastapi import FastAPI
-# import db
-# import db_simple
+from db import *
+from db_simple import *
 
 app = FastAPI()
 
 @app.get("/posting")
 def get_all_postings():
-    return getpostall()
+    return {"message": getpostall()}
 
 @app.get("/posting/id")
 def get_post_by_id(id: str):

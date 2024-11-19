@@ -1,8 +1,8 @@
 def getpostid(id):
-    print("Getting one specific post" + id)
-    
-def getpostall():
-    print("Getting all postings")
+    return ("Getting one specific post" + id)
     
 def getcompanyall():
-    print("Getting all companies")
+    return "Getting all companies"
+
+def getpostall():
+    return "Getting all postings"
