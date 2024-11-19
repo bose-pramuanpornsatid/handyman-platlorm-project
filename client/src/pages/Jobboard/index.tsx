@@ -75,6 +75,7 @@ const Jobboard: React.FC = memo(() => {
               {selectedJob ? (
                   <JobDetails
                     jobName={selectedJob.job_name}
+                    companyName={selectedJob.company_name}
                     companyId={selectedJob.company_id}
                     postDate={selectedJob.post_date}
                     location={selectedJob.location}

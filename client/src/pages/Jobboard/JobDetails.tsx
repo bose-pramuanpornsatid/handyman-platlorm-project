@@ -3,13 +3,14 @@ import React from 'react';
 interface JobDetailsProps {
   jobName: string;
   category: string;
+  companyName: string;
   companyId: string;
   postDate: string;
   location: string;
   description: string;
 }
 
-const JobDetails: React.FC<JobDetailsProps> = ({ jobName, category, companyId, postDate, location, description }) => {
+const JobDetails: React.FC<JobDetailsProps> = ({ jobName, category, companyName, companyId, postDate, location, description }) => {
   return (
     <div className="p-3 w-full h-xl bg-white rounded-lg shadow-md h-full">
     <span className="inline-block p-3 text-blue-500 bg-blue-100 rounded-full">
@@ -34,6 +35,9 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobName, category, companyId, p
     </h1>
     <h1 className="mt-2 text-sm text-gray-700 ">
         {category}category
+    </h1>
+    <h1 className="mt-2 text-sm text-gray-700 ">
+        {companyName}company name
     </h1>
     <p className="mt-2 text-base text-gray-500 ">Company ID: {companyId}</p>
     <p className="mt-2 text-base text-gray-500 ">Location: {location}</p>
