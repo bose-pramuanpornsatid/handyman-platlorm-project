@@ -1,0 +1,17 @@
+FROM registry.access.redhat.com/ubi8/python-311
+WORKDIR .
+
+# Copy dependency info
+COPY requirements.txt ./
+
+# Install dependencies
+RUN pip3 install -r requirements.txt
+
+# Copy Source Code
+COPY . .
+
+# Expose PORT
+EXPOSE 8000
+
+# Run Server
+CMD fastapi run api.py
