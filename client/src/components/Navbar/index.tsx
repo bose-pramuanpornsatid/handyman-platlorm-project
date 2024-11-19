@@ -3,7 +3,7 @@ import React, { memo } from 'react'
 import styles from './index.module.css'
 
 import Box from '../../components/Box'
-import logo from '../../jobkinator_logo.png'
+import logo from '../../../public/logo.svg'
 import router from '../../router'
 
 import { useState } from 'react'
@@ -27,8 +27,8 @@ const Navbar: React.FC = memo(() => {
             <span className="sr-only">Your Company</span>
             <img
               alt=""
-              src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-              className="h-8 w-auto"
+              src={logo}
+              className="h-10 10-auto"
             />
           </a>
         </div>
@@ -63,7 +63,7 @@ const Navbar: React.FC = memo(() => {
               <span className="sr-only">Your Company</span>
               <img
                 alt=""
-                src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
+                src={logo}
                 className="h-8 w-auto"
               />
             </a>

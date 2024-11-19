@@ -2,7 +2,7 @@ import React, { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import Box from '../../components/Box'
-import logo from '../../jobkinator_logo.png'
+import logo from '../../logo.svg'
 import styles from './index.module.css'
 import router from '../../router'
 
@@ -32,20 +32,19 @@ const Index: React.FC<Props> = memo(() => {
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
           <div className="hidden sm:mb-8 sm:flex sm:justify-center">
             <div className="relative rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-              Announcing our next round of funding.{' '}
+              Explore jobs that match with you.{' '}
               <a href="#" className="font-semibold text-indigo-600">
                 <span aria-hidden="true" className="absolute inset-0" />
-                Read more <span aria-hidden="true">&rarr;</span>
+                Take the quiz now! <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </div>
           <div className="text-center">
             <h1 className="text-balance text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl">
-              Data to enrich your online business
+              Level Up Your Career Quest!
             </h1>
             <p className="mt-8 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8">
-              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
-              fugiat veniam occaecat.
+              Take a quick, fun quiz to unlock your personalized feed of the latest job openings tailored just for you. Discover opportunities that match your skills, interests, and goals—all in one gamified experience.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
