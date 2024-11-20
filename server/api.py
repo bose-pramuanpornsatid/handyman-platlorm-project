@@ -44,12 +44,12 @@ def get_post_by_id(id: str):
         "posting_id": data[0],
         "job_name": data[1],
         "job_description": data[2],
-        "med_salary": int(data[3]),
+        "med_salary": int(data[3]) if data[3] else None,
         "sponsor": data[4],
         "remote_allowed": data[5],
         "location": data[6],
         "post_date": data[7], 
-        "company_id": data[8],
+        "company_id": data[8]
     }
     return {"message": posting_data }
 
