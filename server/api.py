@@ -3,6 +3,7 @@ from db import *
 from db_simple import *
 
 app = FastAPI()
+engine = connect_with_connector()
 
 @app.get("/posting")
 def get_all_postings():
