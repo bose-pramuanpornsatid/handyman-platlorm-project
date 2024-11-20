@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 import sqlalchemy
 
-load_dotenv()
+load_dotenv()   
 
 def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     """

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from db import *
 from db_simple import *
 from dataclasses import dataclass
@@ -6,6 +7,14 @@ from dataclasses import dataclass
 app = FastAPI()
 pool = connect_with_connector()
 db_conn = pool.connect()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 @dataclass
 class posting_result:
