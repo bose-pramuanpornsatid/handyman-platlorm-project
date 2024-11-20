@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from db import *
 from db_simple import *
 from dataclasses import dataclass
@@ -8,8 +7,6 @@ from dataclasses import dataclass
 app = FastAPI()
 pool = connect_with_connector()
 db_conn = pool.connect()
-
-app.add_middleware(HTTPSRedirectMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

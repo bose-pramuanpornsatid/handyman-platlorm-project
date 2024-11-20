@@ -1,13 +1,11 @@
 FROM registry.access.redhat.com/ubi8/python-311
-
-# Set the working directory
-WORKDIR /app
+WORKDIR .
 
 # Copy dependency info
-COPY requirements.txt /app/
+COPY requirements.txt ./
 
 # Install dependencies
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 # Add ENV variables
 ENV DB_USER='python_backend'
@@ -15,11 +13,11 @@ ENV DB_PASS='O4&T(Z(mE5YX,%$I'
 ENV DB_NAME='project'
 ENV INSTANCE_CONNECTION_NAME='fall-fun-cs411:us-central1:sql-backend'
 
-# Copy source code
-COPY . /app
+# Copy Source Code
+COPY . .
 
-# Expose the port Cloud Run will use
-EXPOSE 8080
+# Expose PORT
+EXPOSE 8000
 
-# Start the FastAPI server using the dynamic port
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "$PORT"]
+# Run Server
+CMD fastapi run api.py
