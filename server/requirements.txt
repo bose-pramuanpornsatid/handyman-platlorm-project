@@ -3,3 +3,4 @@ sqlmodel==0.0.22
 pymysql
 sqlalchemy
 fastapi[standard]
+cloud-sql-python-connector[pymysql]
