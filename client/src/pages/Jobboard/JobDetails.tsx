@@ -42,7 +42,8 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobName, category, companyName,
     <p className="mt-2 text-base text-gray-500 ">Company ID: {companyId}</p>
     <p className="mt-2 text-base text-gray-500 ">Location: {location}</p>
     <p className="mt-2 text-base text-gray-500 ">Posted on: {postDate}</p>
-    <p className="mt-2 text-base text-gray-500 ">Description: {description}</p>
+    <h1 className="mt-5 text-base font-semibold text-gray-700">About the Job</h1>
+    <p className="mt-2 text-base text-gray-500 ">{description}</p>
   </div>
   );
 };

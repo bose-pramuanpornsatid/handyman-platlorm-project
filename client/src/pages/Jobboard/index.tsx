@@ -9,7 +9,7 @@ import Papa from 'papaparse';
 const csvFilePath = './data/posting.csv';
 
 const Jobboard: React.FC = memo(() => {
-  const [mockData, setMockData] = useState<any[]>([]); // Use state to store the job data
+  const [mockPostingsList, setMockPostingslist] = useState<any[]>([]); // Use state to store the job data
   const [loading, setLoading] = useState(true); // Add loading state
   const [selectedJob, setSelectedJob] = useState<any | null>(null); // State for selected job
 
@@ -24,7 +24,7 @@ const Jobboard: React.FC = memo(() => {
       })
       .then((csvText) => {
         const parsedData = Papa.parse(csvText, { header: true }).data;
-        setMockData(parsedData); // Update state with parsed data
+        setMockPostingslist(parsedData); // Update state with parsed data
         setLoading(false); // Set loading to false after data is loaded
         setSelectedJob(parsedData[0] || null); // Set first job as default
       })
@@ -36,6 +36,23 @@ const Jobboard: React.FC = memo(() => {
 
   const handleCardClick = (job: any) => {
     setSelectedJob(job); // Set the selected job when a card is clicked
+  };
+
+  const handleCardClickAPI = (postingId: string) => {
+    // Fetch detailed job data from the mock API
+    fetch(`https://pythonapi-995028621724.us-central1.run.app/posting/id?id=${postingId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setSelectedJob(data); // Set the selected job with fetched data
+      })
+      .catch((error) => {
+        console.error('Error fetching job details from API:', error);
+      });
   };
 
   if (loading) {
@@ -53,10 +70,10 @@ const Jobboard: React.FC = memo(() => {
             <p className="mt-1 text-gray-500 text-lg">
               Discover exciting career opportunities across diverse industries.
             </p>
-            <div className="mt-5 flex divide-x divide-gray-300 h-screen">
+            <div className="mt-5 flex divide-x divide-gray-300 h-full">
             <div className="w-1/3 p-3">
               <div className="grid grid-cols-1 xl:grid-cols-1 gap-3 mt-3 xl:mt-5 xl:gap-5 overflow-y-auto h-full">
-              {mockData.map((job) => (
+              {mockPostingsList.map((job) => (
                 <div key={job.posting_id} onClick={() => handleCardClick(job)}>
                   <Card
                     key={job.posting_id}
@@ -72,18 +89,22 @@ const Jobboard: React.FC = memo(() => {
               </div>
             </div>
             <div className="w-2/3 p-3">
+              <div className="overflow-y-auto h-full">
               {selectedJob ? (
+                // posting_id,job_name,job_description,med_salary,sponsor,remote_allowed,
+                // location,post_date,ng_or_internship,company_id
                   <JobDetails
                     jobName={selectedJob.job_name}
                     companyName={selectedJob.company_name}
                     companyId={selectedJob.company_id}
                     postDate={selectedJob.post_date}
                     location={selectedJob.location}
-                    description={selectedJob.description || 'No description available.'}
+                    description={selectedJob.job_description || 'No description available.'}
                   />
                 ) : (
                   <p className="text-gray-500">Select a job to see more details</p>
               )}
+              </div>
             </div>
           </div>
         </div>
