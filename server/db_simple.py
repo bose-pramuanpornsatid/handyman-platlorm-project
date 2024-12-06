@@ -1,8 +1,11 @@
 import os
 from google.cloud.sql.connector import Connector, IPTypes
 import pymysql
+from dotenv import load_dotenv
 
 import sqlalchemy
+
+load_dotenv()   
 
 def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     """
@@ -16,7 +19,7 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     # keep secrets safe.
 
     instance_connection_name = os.environ[
-        "fall-fun-cs411:us-central1:sql-backend"
+        "INSTANCE_CONNECTION_NAME"
     ]  # e.g. 'project:region:instance'
     db_user = os.environ["DB_USER"]  # e.g. 'my-db-user'
     db_pass = os.environ["DB_PASS"]  # e.g. 'my-db-password'

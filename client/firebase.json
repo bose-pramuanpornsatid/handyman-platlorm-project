@@ -8,6 +8,10 @@
     ],
     "rewrites": [
       {
+        "source": "/api/**",
+        "destination": "https://pythonapi-995028621724.us-central1.run.app/"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
