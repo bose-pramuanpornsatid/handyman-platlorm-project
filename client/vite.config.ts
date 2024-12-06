@@ -1,8 +1,8 @@
-import * as path from 'path'
+import * as path from 'path';
 
-import react from '@vitejs/plugin-react-swc'
-import { defineConfig } from 'vite'
-import EnvironmentPlugin from 'vite-plugin-environment'
+import react from '@vitejs/plugin-react-swc';
+import { defineConfig } from 'vite';
+import EnvironmentPlugin from 'vite-plugin-environment';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,6 +15,13 @@ export default defineConfig({
   server: {
     host: true,
     port: 3000,
+    proxy: {
+      '/api': {
+        target: 'https://pythonapi-995028621724.us-central1.run.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
   resolve: {
     alias: {
