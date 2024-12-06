@@ -13,7 +13,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 const Navbar: React.FC = memo(() => {
   const navigation = [
     { name: 'Job Board', href: '/jobboard' },
-    { name: 'Quiz', href: '*' },
+    { name: 'Quiz', href: '/quiz' },
     { name: 'Company', href: '*' },
   ]
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -82,7 +82,7 @@ const Navbar: React.FC = memo(() => {
                   <a
                     key={item.name}
                     href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    className="mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                   >
                     {item.name}
                   </a>
