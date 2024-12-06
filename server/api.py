@@ -53,8 +53,27 @@ def get_post_by_id(id: str):
     }
     return {"message": posting_data }
 
-# @app.get("/companies")
-# def get_all_companies():
-#     insert_stmt=sqlalchemy.text("SELECT job_name, posting_id, company_id, location, post_date FROM posting;")
-#     temp =  db_conn.execute(insert_stmt)
-#     return {"message": "Getting all companies"}
+@app.get("/company/{id}")
+def get_company_by_id(id: str):
+    insert_stmt=sqlalchemy.text("SELECT * FROM employer_companies WHERE company_id = {id};".format(id=id))
+    data =  db_conn.execute(insert_stmt).fetchone()
+    company_data = {
+        "company_id": data[0],
+        "company_name": data[1],
+        "job_description": data[2],
+        "description": data[3],
+        "url": data[4],
+        "address": data[5]
+    }
+    return {"message": company_data }
+
+@app.get("/user/{id}/applications")
+def get_user_from_applications(id: str):
+    insert_stmt=sqlalchemy.text("SELECT posting_id FROM applications WHERE user_id = {id};".format(id=id))
+    data =  db_conn.execute(insert_stmt).fetchall()
+    
+    res = []
+    for item in data:
+        res.append(posting_result(item[0], item[1], item[2], item[3], item[4]))
+
+    return { "result": res }
