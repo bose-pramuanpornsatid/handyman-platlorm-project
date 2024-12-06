@@ -40,8 +40,9 @@ def get_post_by_id(id: str):
         "sponsor": data[4],
         "remote_allowed": data[5],
         "location": data[6],
-        "post_date": data[7], 
-        "company_id": data[8]
+        "post_date": data[7],
+        "ng_or_internship": data[8],
+        "company_id": data[9]
     }
     return {"message": posting_data }
 
@@ -53,9 +54,8 @@ def get_company_by_id(id: str):
         "company_id": data[0],
         "company_name": data[1],
         "job_description": data[2],
-        "description": data[3],
-        "url": data[4],
-        "address": data[5]
+        "url": data[3],
+        "address": data[4]
     }
     return {"message": company_data }
 
@@ -66,54 +66,88 @@ def get_user_from_applications(id: str):
     
     res = []
     for item in data:
-        res.append(posting_result(item[0], item[1], item[2], item[3], item[4]))
+        res.append(item[0])
 
     return { "result": res }
 
-@app.put("/user/create")
+@app.post("/user/create")
 async def create_user(user: User):
-    insert_stmt= \
-    sqlalchemy.text("INSERT INTO USER VALUES user_id = {id}, school_id = {sid}, company_id = {cid}, year = {year}, user_name = {username}, skills = {skills};" \
-        .format(id=user.user_id, sid=user.school_id, cid=user.company_id, year=user.year, username=user.user_name, ))
-    db_conn.execute(insert_stmt)
-    return "Created User"
+    next_id_stmt = sqlalchemy.text("SELECT COALESCE(MAX(user_id), 0) + 1 FROM user;")
+    result = db_conn.execute(next_id_stmt)
+    next_id = result.scalar()
 
-@app.put("/application/create")
+    if user.school_id == None:
+        user.school_id = "NULL"
+    if user.company_id == None:
+        user.company_id = "NULL"
+
+    insert_text = '''
+    INSERT INTO user
+    VALUES ({next_id}, {school_id}, {company_id}, {year}, "{user_name}", "{skills}", 0, 0);
+    '''.format(next_id=next_id, school_id=user.school_id, company_id=user.company_id, year=user.year, user_name=user.user_name, skills=user.skills)
+
+    insert_stmt = sqlalchemy.text(insert_text)
+    result = db_conn.execute(insert_stmt)
+    db_conn.commit()
+    return "User created"
+
+@app.post("/application/create")
 async def create_application(application: Application):
-    insert_stmt=sqlalchemy.text("INSERT INTO applications VALUES posting_id={p_id}, user_id = {id}, NOW();".format(p_id=application.posting_id, id=application.user_id))
+    insert_stmt=sqlalchemy.text("INSERT INTO applications VALUES({p_id}, {id}, NOW(), 'Applied');".format(p_id=application.posting_id, id=application.user_id))
     db_conn.execute(insert_stmt)
-    return "Created Application"
+    db_conn.commit()
+    return "Created application"
 
-@app.put("/posting/create")
+@app.post("/posting/create")
 async def create_posting(posting: Posting):
-    insert_stmt= \
-        sqlalchemy.text("INSERT INTO posting VALUES posting_id = {p_id}, job_name = {job_name}, job_description = {job_desc}, med_salary = {salary}, sponsor = {sponsor}, remote_allowed = {remote}, location = {location}, post_date = {post_date}, ng_or_internship = {i_status}, company_id = {cid};" \
-            .format(p_id=posting.posting_id, job_name=posting.job_name, job_desc=posting.job_description, salary = posting.med_salary, sponsor=posting.sponsor, \
-                remote=posting.remote_allowed, location=posting.location, post_date=posting.post_date, i_status=posting.ng_or_internship, c_id=posting.company_id))
-    db_conn.execute(insert_stmt)
-    return "Created Application"
+    insert_text = '''
+    INSERT INTO posting VALUES({p_id}, "{job_name}", "{job_desc}", {salary}, {sponsor}, {remote}, "{location}", NOW(), "{i_status}", {c_id});
+    '''.format(p_id=posting.posting_id, job_name=posting.job_name, job_desc=posting.job_description, salary = posting.med_salary, sponsor=posting.sponsor, \
+                remote=posting.remote_allowed, location=posting.location, post_date=posting.post_date, i_status=posting.ng_or_internship, c_id=posting.company_id)
 
-@app.put("/user/{id}/update")
+    insert_stmt = sqlalchemy.text(insert_text)
+    db_conn.execute(insert_stmt)
+    db_conn.commit()
+    return "Created posting"
+
+@app.post("/user/{id}/update")
 async def update_user(id: str, user: User):
-    insert_stmt= \
-    sqlalchemy.text("UPDATE USER SET school_id = {sid}, company_id = {cid}, year = {year}, user_name = {username}, skills = {skills} WHERE user_id = {id};" \
-        .format(id=id, sid=user.school_id, cid=user.company_id, year=user.year, username=user.user_name))
-    db_conn.execute(insert_stmt)
-    return "Updated User"
+    if user.school_id == None:
+        user.school_id = "NULL"
+    if user.company_id == None:
+        user.company_id = "NULL"
 
-@app.put("/posting/{id}/update")
-async def update_posting(id: str, posting: Posting):
-    insert_stmt= \
-    sqlalchemy.text("UPDATE posting SET job_name = {job_name}, job_description = {job_desc}, med_salary = {salary}, sponsor = {sponsor}, remote_allowed = {remote}, location = {location}, post_date = {post_date}, ng_or_internship = {i_status}, company_id = {cid} WHERE posting_id = {id};" \
-        .format(id=id, job_name=posting.job_name, job_desc=posting.job_description, salary = posting.med_salary, sponsor=posting.sponsor, \
-            remote=posting.remote_allowed, location=posting.location, post_date=posting.post_date, i_status=posting.ng_or_internship, c_id=posting.company_id))
+    insert_text = '''
+    UPDATE user
+    SET school_id = {sid}, company_id = {cid}, year = {year}, user_name = "{username}", skills = "{skills}"
+    WHERE user_id = {id};
+    '''.format(id=id, sid=user.school_id, cid=user.company_id, year=user.year, username=user.user_name, skills=user.skills)
+    
+    insert_stmt= sqlalchemy.text(insert_text)
     db_conn.execute(insert_stmt)
+    db_conn.commit()
+    return "Updated user"
+
+@app.post("/posting/{id}/update")
+async def update_posting(id: str, posting: Posting):
+    insert_text = '''
+    UPDATE posting
+    SET job_name = "{job_name}", job_description = "{job_desc}", med_salary = {salary}, sponsor = {sponsor}, remote_allowed = {remote},
+        location = "{location}", ng_or_internship = "{i_status}", company_id = {c_id}
+    WHERE posting_id = {id};
+    '''.format(id=id, job_name=posting.job_name, job_desc=posting.job_description, salary = posting.med_salary, sponsor=posting.sponsor, \
+            remote=posting.remote_allowed, location=posting.location, i_status=posting.ng_or_internship, c_id=posting.company_id)
+
+    insert_stmt= sqlalchemy.text(insert_text)
+    db_conn.execute(insert_stmt)
+    db_conn.commit()
     return "Updated posting"
 
-@app.put("/application/{user_id}/{posting_id}/update")
+@app.post("/application/{user_id}/{posting_id}/update")
 async def update_application(user_id: str, posting_id:str, status: Status):
-    insert_stmt=sqlalchemy.text("UPDATE applications SET status = {status} WHERE posting_id = {pid} AND user_id = {uid};".format(pid=posting_id, uid=user_id, status = status.status))
+    insert_stmt=sqlalchemy.text("UPDATE applications SET status = '{status}' WHERE posting_id = {pid} AND user_id = {uid};".format(pid=posting_id, uid=user_id, status = status.status))
     db_conn.execute(insert_stmt)
+    db_conn.commit()
     return "Updated posting status"
 
 @app.get("/posting/{id}/delete")

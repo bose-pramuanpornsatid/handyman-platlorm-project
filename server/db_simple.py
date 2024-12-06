@@ -1,5 +1,6 @@
 import os
 from google.cloud.sql.connector import Connector, IPTypes
+from pymysql.constants import CLIENT
 import pymysql
 from dotenv import load_dotenv
 
@@ -36,6 +37,7 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
             user=db_user,
             password=db_pass,
             db=db_name,
+            client_flag=CLIENT.MULTI_STATEMENTS,
         )
         return conn
 

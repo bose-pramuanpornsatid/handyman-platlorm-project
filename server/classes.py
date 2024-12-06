@@ -46,7 +46,7 @@ class Posting(BaseModel):
     job_description: str | None = None
     med_salary: int | None = None
     sponsor: str | None = None
-    remote_allowed: None = None
+    remote_allowed: int | None = None
     location: str | None = None
     post_date: int | None = None
     ng_or_internship: str | None = None
