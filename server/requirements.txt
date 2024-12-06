@@ -4,3 +4,4 @@ pymysql
 sqlalchemy
 fastapi[standard]
 cloud-sql-python-connector[pymysql]
+pydantic
