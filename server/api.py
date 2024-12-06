@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from db import *
+# from db import *
 from db_simple import *
-from dataclasses import dataclass
+from classes import *
 
 app = FastAPI()
 pool = connect_with_connector()
@@ -15,14 +15,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
-
-@dataclass
-class posting_result:
-    job_name: str
-    posting_id: int
-    company_id: int
-    location: str
-    post_date: str
 
 
 @app.get("/posting")
@@ -77,3 +69,74 @@ def get_user_from_applications(id: str):
         res.append(posting_result(item[0], item[1], item[2], item[3], item[4]))
 
     return { "result": res }
+
+@app.put("/user/create")
+async def create_user(user: User):
+    insert_stmt= \
+    sqlalchemy.text("INSERT INTO USER VALUES user_id = {id}, school_id = {sid}, company_id = {cid}, year = {year}, user_name = {username}, skills = {skills};" \
+        .format(id=user.user_id, sid=user.school_id, cid=user.company_id, year=user.year, username=user.user_name, ))
+    db_conn.execute(insert_stmt)
+    return "Created User"
+
+@app.put("/application/create")
+async def create_application(application: Application):
+    insert_stmt=sqlalchemy.text("INSERT INTO applications VALUES posting_id={p_id}, user_id = {id}, NOW();".format(p_id=application.posting_id, id=application.user_id))
+    db_conn.execute(insert_stmt)
+    return "Created Application"
+
+@app.put("/posting/create")
+async def create_posting(posting: Posting):
+    insert_stmt= \
+        sqlalchemy.text("INSERT INTO posting VALUES posting_id = {p_id}, job_name = {job_name}, job_description = {job_desc}, med_salary = {salary}, sponsor = {sponsor}, remote_allowed = {remote}, location = {location}, post_date = {post_date}, ng_or_internship = {i_status}, company_id = {cid};" \
+            .format(p_id=posting.posting_id, job_name=posting.job_name, job_desc=posting.job_description, salary = posting.med_salary, sponsor=posting.sponsor, \
+                remote=posting.remote_allowed, location=posting.location, post_date=posting.post_date, i_status=posting.ng_or_internship, c_id=posting.company_id))
+    db_conn.execute(insert_stmt)
+    return "Created Application"
+
+@app.put("/user/{id}/update")
+async def update_user(id: str, user: User):
+    insert_stmt= \
+    sqlalchemy.text("UPDATE USER SET school_id = {sid}, company_id = {cid}, year = {year}, user_name = {username}, skills = {skills} WHERE user_id = {id};" \
+        .format(id=id, sid=user.school_id, cid=user.company_id, year=user.year, username=user.user_name))
+    db_conn.execute(insert_stmt)
+    return "Updated User"
+
+@app.put("/posting/{id}/update")
+async def update_posting(id: str, posting: Posting):
+    insert_stmt= \
+    sqlalchemy.text("UPDATE posting SET job_name = {job_name}, job_description = {job_desc}, med_salary = {salary}, sponsor = {sponsor}, remote_allowed = {remote}, location = {location}, post_date = {post_date}, ng_or_internship = {i_status}, company_id = {cid} WHERE posting_id = {id};" \
+        .format(id=id, job_name=posting.job_name, job_desc=posting.job_description, salary = posting.med_salary, sponsor=posting.sponsor, \
+            remote=posting.remote_allowed, location=posting.location, post_date=posting.post_date, i_status=posting.ng_or_internship, c_id=posting.company_id))
+    db_conn.execute(insert_stmt)
+    return "Updated posting"
+
+@app.put("/application/{user_id}/{posting_id}/update")
+async def update_application(user_id: str, posting_id:str, status: Status):
+    insert_stmt=sqlalchemy.text("UPDATE applications SET status = {status} WHERE posting_id = {pid} AND user_id = {uid};".format(pid=posting_id, uid=user_id, status = status.status))
+    db_conn.execute(insert_stmt)
+    return "Updated posting status"
+
+@app.get("/posting/{id}/delete")
+async def delete_posting(id: str):
+    insert_stmt= \
+    sqlalchemy.text("DELETE FROM applications WHERE posting_id = {id};" \
+        .format(id=id))
+    db_conn.execute(insert_stmt)
+    return "Deleted Posting"
+
+@app.get("/application/{uid}/{pid}/delete")
+async def delete_application(uid: str, pid: str):
+    insert_stmt= \
+    sqlalchemy.text("DELETE FROM applications WHERE posting_id = {pid} AND user_id = {uid};" \
+        .format(uid=uid, pid=pid))
+    db_conn.execute(insert_stmt)
+    return "Deleted Application"
+
+@app.get("/user/{id}/delete")
+async def delete_user(id: str):
+    insert_stmt= \
+    sqlalchemy.text("DELETE FROM user WHERE user_id = {id};" \
+        .format(id=id))
+    db_conn.execute(insert_stmt)
+    return "Deleted User"
+
