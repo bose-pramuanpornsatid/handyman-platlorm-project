@@ -173,4 +173,3 @@ async def delete_user(id: str):
         .format(id=id))
     db_conn.execute(insert_stmt)
     return "Deleted User"
-
