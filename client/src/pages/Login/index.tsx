@@ -1,9 +1,34 @@
-import React, { memo } from 'react'
-
+import React, { memo, useState } from 'react'
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { auth } from '../../main'
 import styles from './index.module.css'
 
-const Login: React.FC = memo(() => (
-  <div className={styles.container}>
+const Login: React.FC = memo(() => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+
+  const handleLogin = (event: React.FormEvent) => {
+    event.preventDefault()
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user
+        console.log(user)
+        setSuccess('Login successful!')
+        setError('')
+      })
+      .catch((error) => {
+        const errorCode = error.code
+        const errorMessage = error.message
+        setError(errorMessage)
+        setSuccess('')
+      })
+  }
+
+  return (
+    <div className={styles.container}>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
@@ -17,7 +42,7 @@ const Login: React.FC = memo(() => (
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
                 Email address
@@ -26,9 +51,11 @@ const Login: React.FC = memo(() => (
                 <input
                   id="email"
                   name="email"
-                type="email"
+                  type="email"
                   required
                   autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -52,10 +79,15 @@ const Login: React.FC = memo(() => (
                   type="password"
                   required
                   autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                 />
               </div>
             </div>
+
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {success && <p className="text-green-500 text-sm">{success}</p>}
 
             <div>
               <button
@@ -75,8 +107,9 @@ const Login: React.FC = memo(() => (
           </p>
         </div>
       </div>
-  </div>
-))
+    </div>
+  )
+})
 Login.displayName = 'Login'
 
 export default Login
