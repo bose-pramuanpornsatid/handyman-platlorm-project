@@ -9,6 +9,13 @@ class posting_result:
     company_id: int
     location: str
     post_date: str
+
+@dataclass
+class company_result:
+    company_name: str | None = None
+    description: str | None = None
+    url: str | None = None
+    address: str | None = None
     
 class Application(BaseModel):
     posting_id: int | None = None
@@ -39,6 +46,7 @@ class User(BaseModel):
     skills: str | None = None
     current_streak: int | None = None
     points: int | None = None
+    auth_uid: str | None = None
 
 class Posting(BaseModel):
     posting_id: int | None = None

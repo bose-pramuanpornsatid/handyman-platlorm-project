@@ -83,8 +83,8 @@ async def create_user(user: User):
 
     insert_text = '''
     INSERT INTO user
-    VALUES ({next_id}, {school_id}, {company_id}, {year}, "{user_name}", "{skills}", 0, 0);
-    '''.format(next_id=next_id, school_id=user.school_id, company_id=user.company_id, year=user.year, user_name=user.user_name, skills=user.skills)
+    VALUES ({next_id}, {school_id}, {company_id}, {year}, "{user_name}", "{skills}", 0, 0, "{auth_uid}");
+    '''.format(next_id=next_id, school_id=user.school_id, company_id=user.company_id, year=user.year, user_name=user.user_name, skills=user.skills, auth_uid=user.auth_uid)
 
     insert_stmt = sqlalchemy.text(insert_text)
     result = db_conn.execute(insert_stmt)
@@ -119,9 +119,9 @@ async def update_user(id: str, user: User):
 
     insert_text = '''
     UPDATE user
-    SET school_id = {sid}, company_id = {cid}, year = {year}, user_name = "{username}", skills = "{skills}"
+    SET school_id = {sid}, company_id = {cid}, year = {year}, user_name = "{username}", skills = "{skills}", authuid = "{auth_uid}"
     WHERE user_id = {id};
-    '''.format(id=id, sid=user.school_id, cid=user.company_id, year=user.year, username=user.user_name, skills=user.skills)
+    '''.format(id=id, sid=user.school_id, cid=user.company_id, year=user.year, username=user.user_name, skills=user.skills, auth_uid=user.auth_uid)
     
     insert_stmt= sqlalchemy.text(insert_text)
     db_conn.execute(insert_stmt)
@@ -173,3 +173,44 @@ async def delete_user(id: str):
         .format(id=id))
     db_conn.execute(insert_stmt)
     return "Deleted User"
+
+@app.get("/user/auth/{auth_uid}")
+def auth_get_user(auth_uid: str):
+    insert_stmt=sqlalchemy.text("SELECT * FROM user WHERE authuid = '{auth_uid}';".format(auth_uid=auth_uid))
+    data =  db_conn.execute(insert_stmt).fetchone()
+    user_data = {
+        "user_id": data[0],
+        "school_id": data[1],
+        "company_id": data[2],
+        "year": int(data[3]) if data[3] else None,
+        "user_name": data[4],
+        "skills": data[5],
+        "current_streak": int(data[6]) if data[6] else None,
+        "points": int(data[7]) if data[7] else None,
+        "auth_uid": data[8]
+    }
+
+    return {"message": user_data }
+
+
+@app.get("/company/{id}/postings")
+def get_postings_from_company(id: str):
+    insert_stmt=sqlalchemy.text("SELECT * FROM posting WHERE company_id = {id};".format(id=id))
+    data =  db_conn.execute(insert_stmt).fetchall()
+    
+    res = []
+    for item in data:
+        res.append(item[0])
+
+    return { "result": res }
+
+@app.get("/company")
+def get_all_postings():
+    insert_stmt=sqlalchemy.text("SELECT * FROM employer_companies LIMIT 1000;")
+    temp = db_conn.execute(insert_stmt).fetchall()
+
+    res = []
+    for item in temp:
+        res.append(company_result(item[0], item[1], item[2], item[3]))
+
+    return { "result": res }
