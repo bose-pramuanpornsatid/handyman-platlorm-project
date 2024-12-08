@@ -76,7 +76,7 @@ def get_company_by_id(id: str):
 
 @app.get("/user/{user_id}/applications")
 def get_user_applications(user_id: str):
-    insert_stmt = sqlalchemy.text("SELECT * FROM applications WHERE user_id = {user_id};".format(user_id=user_id))
+    insert_stmt = sqlalchemy.text("SELECT * FROM (SELECT * FROM applications WHERE user_id = {user_id}) user_application NATURAL JOIN posting;".format(user_id=user_id))
     data = db_conn.execute(insert_stmt).fetchall()
     
     res = []
@@ -87,7 +87,18 @@ def get_user_applications(user_id: str):
             "application_date": item[2],
             "status": item[3]
         }
-        res.append(application_data)
+        posting_data = {
+            "job_name": item[4],
+            "job_description": item[5],
+            "med_salary": int(item[6]) if item[6] else None,
+            "sponsor": item[7] if item[7] else None,
+            "remote_allowed": item[8] if item[8] else None,
+            "location": item[9] if item[9] else None,
+            "post_date": item[10],
+            "ng_or_internship": item[11] if item[11] else None,
+            "company_id": item[12] if item[12] else None
+        }
+        res.append({"application_data": application_data, "posting_data": posting_data})
 
     return { "result": res }
 
