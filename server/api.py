@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 # from db import *
 from db_simple import *
 from classes import *
@@ -12,10 +13,13 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=['*', "https://jobkinator.web.app", "http://localhost:3000"],  # Add localhost:3000
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Explicitly specify allowed methods
     allow_headers=["*"]
 )
 
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(request: Request, rest_of_path: str):
+    return JSONResponse({"message": "Preflight request successful"})
 
 @app.get("/posting")
 def get_all_postings():
