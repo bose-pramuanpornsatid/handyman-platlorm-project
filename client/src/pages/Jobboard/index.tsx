@@ -36,7 +36,7 @@ const Jobboard: React.FC = memo(() => {
   const handleLocationFilterChange = (query: string) => {
     setLocationQuery(query); // Update the location query for filtering
   };
-  const [streak, setStreak] = useState(0); // Streak state
+
   const [userData, setUserData] = useState<UserData>({
     user_id: null,
     school_id: null,
@@ -44,14 +44,14 @@ const Jobboard: React.FC = memo(() => {
     year: null,
     user_name: '',
     skills: '',
-    current_streak: null,
+    current_streak: 0,
     points: null,
     auth_uid: localStorage.getItem('auth_uid'),
   });
 
   const incrementStreak = async () => {
-    const newStreak = Math.min(streak + 1, 50);
-    setStreak(newStreak);
+    const newStreak = Math.min(userData.current_streak! + 1, 50);
+    setUserData({ ...userData, current_streak: newStreak });
 
     try {
       const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/user/${userData.user_id}/update`, {
@@ -65,7 +65,7 @@ const Jobboard: React.FC = memo(() => {
           year: userData.year,
           user_name: userData.user_name,
           skills: userData.skills,
-          current_streak: newStreak,
+          current_streak: userData.current_streak,
           auth_uid: userData.auth_uid,
         }),
       });
@@ -94,7 +94,7 @@ const Jobboard: React.FC = memo(() => {
       }
 
       const payload = await response.json();
-      console.log('Payload:', payload);
+      // console.log('Payload:', payload);
       setPostingsList(payload.result);
       setFilteredPostings(payload.result); // Initialize filtered postings
       setLoading(false);
@@ -114,7 +114,6 @@ const Jobboard: React.FC = memo(() => {
       }
       const data = await response.json()
       setUserData(data.message)
-      setStreak(data.message.current_streak || 0)
       console.log('User details:', data.message)
     } catch (error) {
       console.error('Failed to fetch user details:', error)
@@ -214,9 +213,9 @@ const Jobboard: React.FC = memo(() => {
               <p className="mt-1 text-gray-500 text-lg">
                 Discover exciting career opportunities across diverse industries.
               </p>
-              <Streak streak={streak} />
+              <Streak streak={userData.current_streak!} />
               {userData.current_streak !== null && (
-                <p>Your current streak: {userData.current_streak}</p>
+                <p className="text-black text-xs">Your current streak: {userData.current_streak}</p>
               )}
             </div>
             <div className="w-full max-w-sm min-w-[200px]">
