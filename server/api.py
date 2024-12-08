@@ -76,27 +76,27 @@ def get_company_by_id(id: str):
 
 @app.get("/user/{user_id}/applications")
 def get_user_applications(user_id: str):
-    insert_stmt = sqlalchemy.text("SELECT * FROM (SELECT * FROM applications WHERE user_id = {user_id}) user_application NATURAL JOIN posting;".format(user_id=user_id))
+    insert_stmt = sqlalchemy.text("SELECT * FROM (	SELECT * FROM applications	WHERE user_id = {user_id}) user_application NATURAL JOIN posting NATURAL JOIN employer_companies;".format(user_id=user_id))
     data = db_conn.execute(insert_stmt).fetchall()
     
     res = []
     for item in data:
         application_data = {
-            "posting_id": item[0],
-            "user_id": item[1],
-            "application_date": item[2],
-            "status": item[3]
+            "posting_id": item[1],
+            "user_id": item[2],
+            "application_date": item[3],
+            "status": item[4]
         }
         posting_data = {
-            "job_name": item[4],
-            "job_description": item[5],
-            "med_salary": int(item[6]) if item[6] else None,
-            "sponsor": item[7] if item[7] else None,
-            "remote_allowed": item[8] if item[8] else None,
-            "location": item[9] if item[9] else None,
-            "post_date": item[10],
-            "ng_or_internship": item[11] if item[11] else None,
-            "company_id": item[12] if item[12] else None
+            "job_name": item[5],
+            "job_description": item[6],
+            "med_salary": int(item[7]) if item[7] else None,
+            "sponsor": item[8] if item[8] else None,
+            "remote_allowed": item[9] if item[9] else None,
+            "location": item[10] if item[10] else None,
+            "post_date": item[11],
+            "ng_or_internship": item[12] if item[12] else None,
+            "company_name": item[13] if item[13] else None
         }
         res.append({"application_data": application_data, "posting_data": posting_data})
 
