@@ -9,6 +9,8 @@ class posting_result:
     company_id: int
     location: str
     post_date: str
+    company_name: str
+    remote_allowed: int
 
 @dataclass
 class company_result:
