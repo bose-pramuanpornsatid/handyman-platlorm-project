@@ -1,4 +1,5 @@
-import React, { memo } from 'react'
+import React, { memo, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import styles from './index.module.css'
 
@@ -6,7 +7,6 @@ import Box from '../../components/Box'
 import logo from '../../../public/logo.svg'
 import router from '../../router'
 
-import { useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
@@ -15,8 +15,22 @@ const Navbar: React.FC = memo(() => {
     { name: 'Job Board', href: '/jobboard' },
     { name: 'Quiz', href: '/quiz' },
     { name: 'Company', href: '*' },
+    { name: 'Profile', href: '/profile' },
   ]
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const auth_uid = localStorage.getItem('auth_uid')
+    setIsLoggedIn(!!auth_uid)
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth_uid')
+    setIsLoggedIn(false)
+    navigate('/login')
+  }
 
   return(
     <header className="absolute inset-x-0 top-0 z-50">
@@ -49,9 +63,15 @@ const Navbar: React.FC = memo(() => {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="/login" className="text-sm/6 font-semibold text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+          {isLoggedIn ? (
+            <button onClick={handleLogout} className="text-sm/6 font-semibold text-gray-900">
+              Log out <span aria-hidden="true">&rarr;</span>
+            </button>
+          ) : (
+            <a href="/login" className="text-sm/6 font-semibold text-gray-900">
+              Log in <span aria-hidden="true">&rarr;</span>
+            </a>
+          )}
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
@@ -89,12 +109,21 @@ const Navbar: React.FC = memo(() => {
                 ))}
               </div>
               <div className="py-6">
-                <a
-                  href="/login"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </a>
+                {isLoggedIn ? (
+                  <button
+                    onClick={handleLogout}
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                  >
+                    Log out
+                  </button>
+                ) : (
+                  <a
+                    href="/login"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                  >
+                    Log in
+                  </a>
+                )}
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 import Layout from './components/Layout/Layout'
 import Index from './pages/Index'
@@ -7,6 +7,14 @@ import Quiz from './pages/Quiz'
 import Login from './pages/Login'
 import Jobboard from './pages/Jobboard'
 import SignUp from './pages/SignUp'
+import Profile from './pages/Profile'
+import RoleSelection from './pages/RoleSelection'
+import ProfileSetup from './pages/ProfileSetup'
+
+const ProtectedRoute = ({ element }) => {
+  const auth_uid = localStorage.getItem('auth_uid');
+  return auth_uid ? element : <Navigate to="/login" />;
+};
 
 const router = createBrowserRouter([
   {
@@ -27,16 +35,24 @@ const router = createBrowserRouter([
       },
       {
         path: 'quiz', 
-        element: <Quiz />,
+        element: <ProtectedRoute element={<Quiz />} />,
       },
       {
         path: 'jobboard', 
-        element: <Jobboard />,
+        element: <ProtectedRoute element={<Jobboard />} />,
       },
       {
         path: 'profile', 
-        element: <Quiz />,
+        element: <ProtectedRoute element={<Profile />} />,
       },
+      {
+        path: 'role-selection',
+        element: <ProtectedRoute element={<RoleSelection />} />,
+      },
+      {
+        path: 'profile-setup',
+        element: <ProtectedRoute element={<ProfileSetup />} />,
+      }
     ],
   },
   {
