@@ -74,6 +74,23 @@ def get_user_from_applications(id: str):
 
     return { "result": res }
 
+@app.get("/user/{user_id}/applications")
+def get_user_applications(user_id: str):
+    insert_stmt = sqlalchemy.text("SELECT * FROM applications WHERE user_id = {user_id};".format(user_id=user_id))
+    data = db_conn.execute(insert_stmt).fetchall()
+    
+    res = []
+    for item in data:
+        application_data = {
+            "posting_id": item[0],
+            "user_id": item[1],
+            "application_date": item[2],
+            "status": item[3]
+        }
+        res.append(application_data)
+
+    return { "result": res }
+
 @app.post("/user/create")
 async def create_user(user: User):
     next_id_stmt = sqlalchemy.text("SELECT COALESCE(MAX(user_id), 0) + 1 FROM user;")
@@ -196,7 +213,7 @@ def auth_get_user(auth_uid: str):
 
     return {"message": user_data }
 
-# Get postings by id
+
 @app.get("/company/{id}/postings")
 def get_postings_from_company(id: str):
     insert_stmt=sqlalchemy.text("SELECT * FROM posting WHERE company_id = {id};".format(id=id))
