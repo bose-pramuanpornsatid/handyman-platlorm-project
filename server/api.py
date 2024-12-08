@@ -196,7 +196,7 @@ def auth_get_user(auth_uid: str):
 
     return {"message": user_data }
 
-
+# Get postings by id
 @app.get("/company/{id}/postings")
 def get_postings_from_company(id: str):
     insert_stmt=sqlalchemy.text("SELECT * FROM posting WHERE company_id = {id};".format(id=id))
