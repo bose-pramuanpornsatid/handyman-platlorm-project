@@ -23,12 +23,12 @@ async def preflight_handler(request: Request, rest_of_path: str):
 
 @app.get("/posting")
 def get_all_postings():
-    insert_stmt=sqlalchemy.text("SELECT job_name, posting_id, company_id, location, post_date FROM posting LIMIT 1000;")
+    insert_stmt=sqlalchemy.text("SELECT job_name, posting_id, company_id, location, post_date, company_name, remote_allowed FROM posting NATURAL JOIN employer_companies LIMIT 1000;")
     temp = db_conn.execute(insert_stmt).fetchall()
 
     res = []
     for item in temp:
-        res.append(posting_result(item[0], item[1], item[2], item[3], item[4]))
+        res.append(posting_result(item[0], item[1], item[2], item[3], item[4], item[5], item[6]))
 
     return { "result": res }
 
