@@ -123,9 +123,9 @@ async def update_user(id: str, user: User):
 
     insert_text = '''
     UPDATE user
-    SET school_id = {sid}, company_id = {cid}, year = {year}, user_name = "{username}", skills = "{skills}", authuid = "{auth_uid}"
+    SET school_id = {sid}, company_id = {cid}, year = {year}, user_name = "{username}", skills = "{skills}", authuid = "{auth_uid}", current_streak = {current_streak}
     WHERE user_id = {id};
-    '''.format(id=id, sid=user.school_id, cid=user.company_id, year=user.year, username=user.user_name, skills=user.skills, auth_uid=user.auth_uid)
+    '''.format(id=id, sid=user.school_id, cid=user.company_id, year=user.year, username=user.user_name, skills=user.skills, auth_uid=user.auth_uid, current_streak=user.current_streak)
     
     insert_stmt= sqlalchemy.text(insert_text)
     db_conn.execute(insert_stmt)
