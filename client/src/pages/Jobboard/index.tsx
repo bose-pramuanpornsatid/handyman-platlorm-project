@@ -23,9 +23,19 @@ interface UserData {
   auth_uid: string | null;
 }
 
+interface Posting {
+  job_name: string | null;
+  posting_id: string | null;
+  company_id: string | null;
+  location: string | null;
+  post_date: string | null;
+  company_name: string | null;
+  remote_allowed: number | null;
+}
+
 const Jobboard: React.FC = memo(() => {
-  const [postingsList, setPostingsList] = useState<any[]>([]); // State to store job data
-  const [filteredPostings, setFilteredPostings] = useState<any[]>([]); // State for filtered job data
+  const [postingsList, setPostingsList] = useState<Posting[]>([]); // State to store job data
+  const [filteredPostings, setFilteredPostings] = useState<Posting[]>([]); // State for filtered job data
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
   const [selectedJob, setSelectedJob] = useState<any | null>(null); // Selected job
@@ -77,11 +87,33 @@ const Jobboard: React.FC = memo(() => {
       console.log('User streak updated successfully');
     } catch (error) {
       console.error('Failed to update user streak:', error);
+      return; // Exit if updating streak fails
+    }
+
+    try {
+      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/application/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userData.user_id,
+          posting_id: selectedJob.posting_id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log('Application created successfully');
+    } catch (error) {
+      console.error('Failed to create application:', error);
     }
   };
 
   // Fetch job list from the backend API
-  async function fetchJobList() {
+  async function fetchPostingList() {
     try {
       const apiUrl = 'https://pythonapi-995028621724.us-central1.run.app/posting';
       const response = await fetch(apiUrl, {
@@ -94,9 +126,9 @@ const Jobboard: React.FC = memo(() => {
       }
 
       const payload = await response.json();
-      // console.log('Payload:', payload);
-      setPostingsList(payload.result);
-      setFilteredPostings(payload.result); // Initialize filtered postings
+      setPostingsList(payload.result as Posting[]);
+      setFilteredPostings(payload.result as Posting[]); // Initialize filtered postings
+      console.log('Job List:', postingsList);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching job list:', error);
@@ -114,7 +146,6 @@ const Jobboard: React.FC = memo(() => {
       }
       const data = await response.json()
       setUserData(data.message)
-      console.log('User details:', data.message)
     } catch (error) {
       console.error('Failed to fetch user details:', error)
     }
@@ -122,7 +153,7 @@ const Jobboard: React.FC = memo(() => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetchJobList();
+      await fetchPostingList();
       if (userData.auth_uid) {
         await fetchUserDetails();
       }
@@ -245,15 +276,15 @@ const Jobboard: React.FC = memo(() => {
             <div className="mt-5 flex divide-x divide-gray-300 h-full">
               <div className="w-1/3 p-3">
                 <div className="grid grid-cols-1 xl:grid-cols-1 gap-3 mt-3 xl:mt-5 xl:gap-5 overflow-y-auto h-full">
-                  {currentPostings.map((job) => (
-                    <div key={job.posting_id} onClick={() => handleCardClick(job.posting_id)}>
+                  {currentPostings.map((post) => (
+                    <div key={post.posting_id} onClick={() => handleCardClick(post.posting_id)}>
                       <Card
-                        jobName={job.job_name}
-                        companyName={job.company_name}
-                        companyId={job.company_id}
-                        postDate={job.post_date}
-                        location={job.location}
-                        workPlace={job.work_place}
+                        jobName={post.job_name}
+                        companyName={post.company_name}
+                        companyId={post.company_id}
+                        postDate={post.post_date}
+                        location={post.location}
+                        workPlace={post.remote_allowed}
                       />
                     </div>
                   ))}

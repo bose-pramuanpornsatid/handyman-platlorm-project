@@ -4,10 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './index.module.css'
 
 const ProfileSetup: React.FC = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const { role } = location.state;
-  const auth_uid = location.state?.auth_uid || localStorage.getItem('auth_uid');
+  const auth_uid = localStorage.getItem('auth_uid');
   const [userData, setUserData] = useState({
     user_name: '',
     skills: '',
