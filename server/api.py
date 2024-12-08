@@ -63,16 +63,16 @@ def get_company_by_id(id: str):
     }
     return {"message": company_data }
 
-@app.get("/user/{id}/applications")
-def get_user_from_applications(id: str):
-    insert_stmt=sqlalchemy.text("SELECT posting_id FROM applications WHERE user_id = {id};".format(id=id))
-    data =  db_conn.execute(insert_stmt).fetchall()
+# @app.get("/user/{id}/applications")
+# def get_user_from_applications(id: str):
+#     insert_stmt=sqlalchemy.text("SELECT posting_id FROM applications WHERE user_id = {id};".format(id=id))
+#     data =  db_conn.execute(insert_stmt).fetchall()
     
-    res = []
-    for item in data:
-        res.append(item[0])
+#     res = []
+#     for item in data:
+#         res.append(item[0])
 
-    return { "result": res }
+#     return { "result": res }
 
 @app.get("/user/{user_id}/applications")
 def get_user_applications(user_id: str):
