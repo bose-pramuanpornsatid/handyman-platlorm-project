@@ -228,7 +228,7 @@ const Profile: React.FC = memo(() => {
 
   // Correct the onEdit function to use navigate properly
   const onEdit = () => {
-    navigate('/profile-setup'); // Navigate without passing role
+    navigate('/profile-edit'); // Navigate without passing role
   }
 
   return (

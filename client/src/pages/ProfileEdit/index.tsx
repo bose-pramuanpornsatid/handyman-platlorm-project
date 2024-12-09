@@ -6,6 +6,7 @@ import { useAuthState } from 'react-firebase-hooks/auth'; // Add this import
 import styles from './index.module.css'
 
 interface UserData {
+  user_id: number | null; // Added user_id
   school_id: string | null;
   company_id: string | null;
   year: number | null;
@@ -16,14 +17,14 @@ interface UserData {
   auth_uid: string | null;
 }
 
-const ProfileSetup: React.FC = () => {
+const ProfileEdit: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Access navigation state
-  const { role: passedRole } = location.state || {}; // Extract role from navigation state
   const [user, loadingAuth, errorAuth] = useAuthState(auth); // User authentication state
   const [userData, setUserData] = useState<UserData>({
-    school_id: passedRole === 'student' ? '' : null,
-    company_id: passedRole === 'recruiter' ? '' : null,
+    user_id: null,
+    school_id: null,
+    company_id: null,
     year: null,
     user_name: '',
     skills: '',
@@ -53,23 +54,37 @@ const ProfileSetup: React.FC = () => {
     }
   };
 
+  const fetchUserData = async (authUid: string) => {
+    try {
+      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/user/auth/${authUid}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('User data:', data.message);
+        setUserData({
+          ...data.message, // Assuming API returns user data under 'message'
+        });
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      if (passedRole === 'student') {
+      if (user) {
+        const authUid = user.uid;
+        setUserData(prevData => ({
+          ...prevData,
+          auth_uid: authUid,
+        }));
+        await fetchUserData(authUid);
         await fetchSchools();
       }
     };
-
+    
     fetchData();
-  }, [passedRole]);
-
-  useEffect(() => {
-    if (user) {
-      setUserData(prevData => ({
-        ...prevData,
-        auth_uid: user.uid,
-      }));
-    }
   }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,19 +105,20 @@ const ProfileSetup: React.FC = () => {
     setLoading(true); // Set loading to true before API call
     
     const payload = {
-      school_id: passedRole === 'student' ? (userData.school_id ? parseInt(userData.school_id) : null) : null,
-      company_id: passedRole === 'recruiter' ? (userData.company_id ? parseInt(userData.company_id) : null) : null,
-      year: userData.year ? parseInt(userData.year) : null,
+      school_id: userData.school_id ? parseInt(userData.school_id.toString()) : null,
+      company_id: userData.company_id ? parseInt(userData.company_id.toString()) : null,
+      year: userData.year ? parseInt(userData.year.toString()) : null,
       user_name: userData.user_name,
       skills: userData.skills,
       auth_uid: userData.auth_uid,
+      current_streak: userData.current_streak || 0,
     };
     
     console.log('Payload:', payload)
 
     try {
-      // Use only create API
-      const response = await fetch('https://pythonapi-995028621724.us-central1.run.app/user/create', {
+      // Use update API with user_id
+      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/user/${userData.user_id}/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -116,7 +132,7 @@ const ProfileSetup: React.FC = () => {
 
       navigate('/profile');
     } catch (err) {
-      setError('Failed to create user');
+      setError('Failed to update user');
     } finally {
       setLoading(false); // Reset loading state
     }
@@ -159,82 +175,58 @@ const ProfileSetup: React.FC = () => {
               </div>
             </div>
 
-            { (passedRole === 'student') && (
-              <>
-                <div className="sm:col-span-6">
-                  <label htmlFor="school_name" className="block text-sm font-medium text-gray-900">
-                    School Name
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="school_search"
-                      name="school_search"
-                      type="text"
-                      value={schoolSearch}
-                      onChange={(e) => setSchoolSearch(e.target.value)}
-                      placeholder="Search for your school"
-                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
-                    />
-                    <select
-                      id="school_name"
-                      name="school_name"
-                      value={userData.school_id}
-                      onChange={handleSchoolSelect}
-                      className="mt-2 block w-full rounded-md bg-white border border-gray-300 py-2 px-3 text-base text-gray-900 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
-                      required
-                    >
-                      <option value="">Select your school</option>
-                      {schools
-                        .filter(school => school.school_name.toLowerCase().includes(schoolSearch.toLowerCase()))
-                        .slice(0, 6) // Limit to top 6 matches
-                        .map(school => (
-                          <option key={school.school_id} value={school.school_id}>
-                            {school.school_name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="sm:col-span-3">
-                  <label htmlFor="year" className="block text-sm font-medium text-gray-900">
-                    Year
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="year"
-                      name="year"
-                      type="number"
-                      value={userData.year}
-                      onChange={handleChange}
-                      placeholder="Year"
-                      required
-                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
-            { (passedRole === 'recruiter') && (
-              <div className="sm:col-span-6">
-                <label htmlFor="company_id" className="block text-sm font-medium text-gray-900">
-                  Company ID
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="company_id"
-                    name="company_id"
-                    type="text"
-                    value={userData.company_id || ''}
-                    onChange={handleChange}
-                    placeholder="Company ID"
-                    required
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
-                  />
-                </div>
+            <div className="sm:col-span-6">
+              <label htmlFor="school_name" className="block text-sm font-medium text-gray-900">
+                School Name
+              </label>
+              <div className="mt-2">
+                <input
+                  id="school_search"
+                  name="school_search"
+                  type="text"
+                  value={schoolSearch}
+                  onChange={(e) => setSchoolSearch(e.target.value)}
+                  placeholder="Search for your school"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+                />
+                <select
+                  id="school_name"
+                  name="school_name"
+                  value={userData.school_id}
+                  onChange={handleSchoolSelect}
+                  className="mt-2 block w-full rounded-md bg-white border border-gray-300 py-2 px-3 text-base text-gray-900 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+                  required
+                >
+                  <option value="">Select your school</option>
+                  {schools
+                    .filter(school => school.school_name.toLowerCase().includes(schoolSearch.toLowerCase()))
+                    .slice(0, 6) // Limit to top 6 matches
+                    .map(school => (
+                      <option key={school.school_id} value={school.school_id}>
+                        {school.school_name}
+                      </option>
+                    ))}
+                </select>
               </div>
-            )}
+            </div>
+
+            <div className="sm:col-span-3">
+              <label htmlFor="year" className="block text-sm font-medium text-gray-900">
+                Year
+              </label>
+              <div className="mt-2">
+                <input
+                  id="year"
+                  name="year"
+                  type="number"
+                  value={userData.year}
+                  onChange={handleChange}
+                  placeholder="Year"
+                  required
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+                />
+              </div>
+            </div>
 
             <div className="sm:col-span-6">
               <label htmlFor="skills" className="block text-sm font-medium text-gray-900">
@@ -277,4 +269,4 @@ const ProfileSetup: React.FC = () => {
   );
 };
 
-export default ProfileSetup;
+export default ProfileEdit;

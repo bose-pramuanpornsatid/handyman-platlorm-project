@@ -10,6 +10,7 @@ import SignUp from './pages/SignUp'
 import Profile from './pages/Profile'
 import RoleSelection from './pages/RoleSelection'
 import ProfileSetup from './pages/ProfileSetup'
+import ProfileEdit from './pages/ProfileEdit'
 
 const ProtectedRoute = ({ element }) => {
   const auth_uid = localStorage.getItem('auth_uid');
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: 'profile-setup',
         element: <ProtectedRoute element={<ProfileSetup />} />,
+      },
+      {
+        path: 'profile-edit',
+        element: <ProtectedRoute element={<ProfileEdit />} />,
       }
     ],
   },

@@ -36,7 +36,9 @@ const RoleSelection: React.FC = memo(() => {
   const auth_uid = location.state?.auth_uid;
 
   const handleSelectRole = (role: string) => {
-    navigate('/profile-setup', { state: { role, auth_uid } });
+    console.log('Selected role:', role); // Debug: log selected role
+    console.log('Auth UID:', auth_uid); // Debug: log auth_uid
+    navigate('/profile-setup', { state: { role, auth_uid } }); // Ensure role is correctly passed
   };
 
   return (
