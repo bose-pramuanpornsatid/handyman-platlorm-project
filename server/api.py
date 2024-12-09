@@ -104,7 +104,7 @@ async def create_user(user: User):
 
     insert_text = '''
     INSERT INTO user
-    VALUES ({next_id}, {school_id}, {company_id}, {year}, "{user_name}", "{skills}", 0, 0, "{auth_uid}");
+    VALUES ({next_id}, {school_id}, {company_id}, {year}, "{user_name}", "{skills}", 0, 0, "{auth_uid}", NULL);
     '''.format(next_id=next_id, school_id=user.school_id, company_id=user.company_id, year=user.year, user_name=user.user_name, skills=user.skills, auth_uid=user.auth_uid)
 
     insert_stmt = sqlalchemy.text(insert_text)
