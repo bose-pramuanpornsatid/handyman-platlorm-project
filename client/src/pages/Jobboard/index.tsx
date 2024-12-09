@@ -41,10 +41,18 @@ const Jobboard: React.FC = memo(() => {
   const [selectedJob, setSelectedJob] = useState<any | null>(null); // Selected job
   const [searchQuery, setSearchQuery] = useState<string>(''); // Search query state
   const [locationQuery, setLocationQuery] = useState<string>(''); // Location filter query
+  const [selectedWorkTypes, setSelectedWorkTypes] = useState<string[]>([]); // Work type filter
   const [currentPage, setCurrentPage] = useState(1);
   const postingsPerPage = 10;
+
+  // Callback to handle location filter changes from Filter component
   const handleLocationFilterChange = (query: string) => {
     setLocationQuery(query); // Update the location query for filtering
+  };
+
+  // Callback to handle work type filter changes from Filter component
+  const handleWorkTypeChange = (selectedWorkTypes: string[]) => {
+    setSelectedWorkTypes(selectedWorkTypes);
   };
 
   const [userData, setUserData] = useState<UserData>({
@@ -110,6 +118,8 @@ const Jobboard: React.FC = memo(() => {
     } catch (error) {
       console.error('Failed to create application:', error);
     }
+
+    await fetchUserDetails()
   };
 
   // Fetch job list from the backend API
@@ -126,9 +136,19 @@ const Jobboard: React.FC = memo(() => {
       }
 
       const payload = await response.json();
-      setPostingsList(payload.result as Posting[]);
-      setFilteredPostings(payload.result as Posting[]); // Initialize filtered postings
-      console.log('Job List:', postingsList);
+      // Normalize remote_allowed
+      const normalizedPostings = payload.result.map(post => ({
+        ...post,
+        remote_allowed:
+          post.remote_allowed === "1" ||
+          post.remote_allowed === "1.0" ||
+          post.remote_allowed === 1
+            ? 1
+            : 0,
+      }));
+      setPostingsList(normalizedPostings);
+      setFilteredPostings(normalizedPostings); // Initialize filtered postings
+      console.log('Job List:', payload.result);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching job list:', error);
@@ -162,16 +182,28 @@ const Jobboard: React.FC = memo(() => {
     fetchData();
   }, [userData.auth_uid]); // Fetch job list and user details once on component mount
 
-  // Update filtered postings based on search query
+  // Update filtered postings based on search query, location, and work type
   useEffect(() => {
-    const filtered = postingsList.filter(
-      (job) =>
-        ((job.job_name && job.job_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          (job.company_name && job.company_name.toLowerCase().includes(searchQuery.toLowerCase()))) &&
-        (locationQuery === '' || (job.location && job.location.toLowerCase().includes(locationQuery.toLowerCase())))
-    );
+    const filtered = postingsList.filter((job) => {
+      const matchesSearch =
+        (job.job_name && job.job_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (job.company_name && job.company_name.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchesLocation =
+        locationQuery === '' ||
+        (job.location && job.location.toLowerCase().includes(locationQuery.toLowerCase()));
+      const matchesWorkType =
+        selectedWorkTypes.length === 0 ||
+        selectedWorkTypes.some((type) =>
+          type === 'Remote'
+            ? job.remote_allowed === 1
+            : type === 'On-site'
+            ? job.remote_allowed === 0
+            : false
+        );
+      return matchesSearch && matchesLocation && matchesWorkType;
+    });
     setFilteredPostings(filtered);
-  }, [searchQuery, locationQuery, postingsList]);
+  }, [searchQuery, locationQuery, selectedWorkTypes, postingsList]);
 
   // Fetch detailed job data from the API
   const handleCardClick = async (postingId: string) => {
@@ -201,6 +233,7 @@ const Jobboard: React.FC = memo(() => {
       .then((csvText) => {
         const parsedData = Papa.parse(csvText, { header: true }).data;
         setPostingsList(parsedData);
+        setFilteredPostings(parsedData as Posting[]);
         setLoading(false);
         setSelectedJob(parsedData[0] || null);
       })
@@ -223,6 +256,20 @@ const Jobboard: React.FC = memo(() => {
   const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1).filter(
     (page) => page >= currentPage - 3 && page <= currentPage + 3
   );
+
+  // Compute top 5 most common locations
+  const topLocations = React.useMemo(() => {
+    const locationCount: { [key: string]: number } = {};
+    postingsList.forEach((post) => {
+      if (post.location) {
+        locationCount[post.location] = (locationCount[post.location] || 0) + 1;
+      }
+    });
+    const sortedLocations = Object.entries(locationCount)
+      .sort((a, b) => b[1] - a[1])
+      .map(entry => entry[0]);
+    return sortedLocations.slice(0, 5);
+  }, [postingsList]);
 
   if (loading) {
     return <div>Loading...</div>; // Show loading state while fetching data
@@ -272,11 +319,13 @@ const Jobboard: React.FC = memo(() => {
 
 
           <div className="divide-y divide-gray-300 h-screen mt-6">
-            <Filter onLocationChange={handleLocationFilterChange} />
+          <Filter commonLocations={topLocations} onLocationChange={handleLocationFilterChange} onWorkTypeChange={handleWorkTypeChange} />
             <div className="mt-5 flex divide-x divide-gray-300 h-full">
               <div className="w-1/3 p-3">
-                <div className="grid grid-cols-1 xl:grid-cols-1 gap-3 mt-3 xl:mt-5 xl:gap-5 overflow-y-auto h-full">
-                  {currentPostings.map((post) => (
+                <div className="grid grid-cols-1 xl:grid-cols-1 gap-4 mt-3 overflow-y-auto">
+                  {currentPostings.map((post) => {
+                    // console.log(post.job_name + ' : ' + post.remote_allowed)
+                    return (
                     <div key={post.posting_id} onClick={() => handleCardClick(post.posting_id)}>
                       <Card
                         jobName={post.job_name}
@@ -287,7 +336,7 @@ const Jobboard: React.FC = memo(() => {
                         workPlace={post.remote_allowed}
                       />
                     </div>
-                  ))}
+                  )})}
                 </div>
                 <div className="py-4 flex justify-center">
                   {pageNumbers.map((page) => (
