@@ -63,29 +63,6 @@ def get_company_by_id(id: str):
     }
     return {"message": company_data }
 
-@app.get("/leaderboard")
-def get_company_by_id(id: str):
-    insert_stmt=sqlalchemy.text("SELECT * FROM leaderboard LIMIT 50")
-    data =  db_conn.execute(insert_stmt).fetchone()
-    leaderboard_data = {
-        "school_name": data[0],
-        "school_total_score": data[1],
-        "student_id": data[2],
-        "student_user_name": data[3]
-    }
-    return {"message": leaderboard_data }
-
-# @app.get("/user/{id}/applications")
-# def get_user_from_applications(id: str):
-#     insert_stmt=sqlalchemy.text("SELECT posting_id FROM applications WHERE user_id = {id};".format(id=id))
-#     data =  db_conn.execute(insert_stmt).fetchall()
-    
-#     res = []
-#     for item in data:
-#         res.append(item[0])
-
-#     return { "result": res }
-
 @app.get("/user/{user_id}/applications")
 def get_user_applications(user_id: str):
     insert_stmt = sqlalchemy.text("SELECT * FROM (	SELECT * FROM applications	WHERE user_id = {user_id}) user_application NATURAL JOIN posting NATURAL JOIN employer_companies;".format(user_id=user_id))
