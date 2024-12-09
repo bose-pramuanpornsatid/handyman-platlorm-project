@@ -214,3 +214,14 @@ def get_all_postings():
         res.append(company_result(item[0], item[1], item[2], item[3]))
 
     return { "result": res }
+
+@app.get("/leaderboard")
+def get_leaderboard():
+    insert_stmt=sqlalchemy.text("SELECT * FROM project.leaderboard ORDER BY total_score DESC;")
+    temp = db_conn.execute(insert_stmt).fetchall()
+
+    res = []
+    for item in temp:
+        res.append(school_result(item[0], item[1], item[2], item[3]))
+
+    return { "result": res }

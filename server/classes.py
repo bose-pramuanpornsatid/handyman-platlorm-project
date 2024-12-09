@@ -16,6 +16,13 @@ class company_result:
     description: str | None = None
     url: str | None = None
     address: str | None = None
+
+@dataclass
+class school_result:
+    school_id: int | None = None
+    school_name: str | None = None
+    total_score: int | None = None
+    student_names: str | None = None
     
 class Application(BaseModel):
     posting_id: int | None = None
