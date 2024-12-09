@@ -3,15 +3,15 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
 interface FilterProps {
+  commonLocations: string[]; // New prop for top 5 locations
   onLocationChange: (query: string) => void; // Callback function to pass location filter updates
   onWorkTypeChange: (selectedWorkTypes: string[]) => void; // Callback for work type filter updates
 }
 
-const Filter: React.FC<FilterProps> = memo(({ onLocationChange, onWorkTypeChange }) => {
+const Filter: React.FC<FilterProps> = memo(({ commonLocations, onLocationChange, onWorkTypeChange }) => {
   const [selectedExperience, setSelectedExperience] = useState<string[]>([]);
   const [selectedWorkType, setSelectedWorkType] = useState<string[]>([]);
   const [locationQuery, setLocationQuery] = useState<string>(''); // State for search query
-  const [locations, setLocations] = useState<string[]>(['New York', 'San Francisco', 'Los Angeles', 'Chicago', 'Seattle']); // Static location list
 
   const experienceOptions = ['Internship', 'Full-time', 'Part-time'];
   const workTypeOptions = ['On-site', 'Remote'];
@@ -27,7 +27,8 @@ const Filter: React.FC<FilterProps> = memo(({ onLocationChange, onWorkTypeChange
     );
   };
 
-  const filteredLocations = locations.filter((loc) =>
+  // Filter locations based on search query
+  const filteredLocations = commonLocations.filter((loc) =>
     loc.toLowerCase().includes(locationQuery.toLowerCase())
   );
 
@@ -52,10 +53,20 @@ const Filter: React.FC<FilterProps> = memo(({ onLocationChange, onWorkTypeChange
     onWorkTypeChange(selectedWorkType);
   };
 
+  // Function to handle showing results for location filter
+  const handleShowResults = () => {
+    if (commonLocations.includes(locationQuery)) {
+      onLocationChange(locationQuery);
+    } else {
+      onLocationChange(''); // Handle invalid location by clearing filter
+      // Optionally, you can set an error state to inform the user
+    }
+  };
+
   return (
     <div className="flex space-x-4">
       {/* Experience Level Menu */}
-      <Menu as="div" className="relative inline-block text-left">
+      {/* <Menu as="div" className="relative inline-block text-left">
         {({ open }) => (
           <>
             <div>
@@ -112,7 +123,7 @@ const Filter: React.FC<FilterProps> = memo(({ onLocationChange, onWorkTypeChange
             )}
           </>
         )}
-      </Menu>
+      </Menu> */}
 
       {/* Work Type Menu */}
       <Menu as="div" className="relative inline-block text-left">
@@ -120,9 +131,13 @@ const Filter: React.FC<FilterProps> = memo(({ onLocationChange, onWorkTypeChange
           <>
             <div>
               <MenuButton
-                className="inline-flex w-full justify-center gap-x-1.5 rounded-2xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                className={`inline-flex w-full justify-center gap-x-1.5 rounded-2xl px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 ${
+                  selectedWorkType.length > 0 ? 'bg-blue-100' : 'bg-white'
+                }`}
               >
-                Work type
+                {selectedWorkType.length > 0
+                  ? selectedWorkType.join(', ')
+                  : 'Work type'}
                 <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
               </MenuButton>
             </div>
@@ -184,9 +199,11 @@ const Filter: React.FC<FilterProps> = memo(({ onLocationChange, onWorkTypeChange
           <>
             <div>
               <MenuButton
-                className="inline-flex w-full justify-center gap-x-1.5 rounded-2xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                className={`inline-flex w-full justify-center gap-x-1.5 rounded-2xl px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 ${
+                  locationQuery.trim() !== '' ? 'bg-blue-100' : 'bg-white'
+                }`}
               >
-                Location
+                {locationQuery.trim() !== '' ? locationQuery : 'Location'}
                 <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
               </MenuButton>
             </div>
@@ -203,32 +220,41 @@ const Filter: React.FC<FilterProps> = memo(({ onLocationChange, onWorkTypeChange
                     value={locationQuery}
                     onChange={(e) => {
                       setLocationQuery(e.target.value);
-                      onLocationChange(e.target.value);
+                      // Optionally, clear the current filter when typing
+                      // onLocationChange('');
                     }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm text-gray-900"
                   />
                 </div>
                 <div className="py-1">
-                  {filteredLocations.map((location) => (
-                    <MenuItem key={location} as="div">
-                      <div
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100 hover:text-gray-900"
-                        onClick={() => handleLocationSelect(location)}
-                      >
-                        {location}
-                      </div>
-                    </MenuItem>
-                  ))}
+                  {filteredLocations.length > 0 ? (
+                    filteredLocations.map((location) => (
+                      <MenuItem key={location} as="div">
+                        <div
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100 hover:text-gray-900"
+                          onClick={() => handleLocationSelect(location)}
+                        >
+                          {location}
+                        </div>
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 text-sm text-gray-500">No locations found</div>
+                  )}
                 </div>
                 <div className="flex justify-between p-2">
                   <button
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
-                    onClick={() => setLocationQuery('')}
+                    onClick={() => {
+                      setLocationQuery('');
+                      onLocationChange('');
+                    }}
                   >
                     Cancel
                   </button>
                   <button
                     className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
+                    onClick={handleShowResults}
                   >
                     Show Results
                   </button>

@@ -257,6 +257,20 @@ const Jobboard: React.FC = memo(() => {
     (page) => page >= currentPage - 3 && page <= currentPage + 3
   );
 
+  // Compute top 5 most common locations
+  const topLocations = React.useMemo(() => {
+    const locationCount: { [key: string]: number } = {};
+    postingsList.forEach((post) => {
+      if (post.location) {
+        locationCount[post.location] = (locationCount[post.location] || 0) + 1;
+      }
+    });
+    const sortedLocations = Object.entries(locationCount)
+      .sort((a, b) => b[1] - a[1])
+      .map(entry => entry[0]);
+    return sortedLocations.slice(0, 5);
+  }, [postingsList]);
+
   if (loading) {
     return <div>Loading...</div>; // Show loading state while fetching data
   }
@@ -305,7 +319,7 @@ const Jobboard: React.FC = memo(() => {
 
 
           <div className="divide-y divide-gray-300 h-screen mt-6">
-          <Filter onLocationChange={handleLocationFilterChange} onWorkTypeChange={handleWorkTypeChange} />
+          <Filter commonLocations={topLocations} onLocationChange={handleLocationFilterChange} onWorkTypeChange={handleWorkTypeChange} />
             <div className="mt-5 flex divide-x divide-gray-300 h-full">
               <div className="w-1/3 p-3">
                 <div className="grid grid-cols-1 xl:grid-cols-1 gap-4 mt-3 overflow-y-auto">
