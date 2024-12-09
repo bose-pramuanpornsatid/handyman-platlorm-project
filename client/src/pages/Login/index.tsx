@@ -2,12 +2,14 @@ import React, { memo, useState } from 'react'
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth } from '../../main'
 import styles from './index.module.css'
+import { useNavigate } from 'react-router-dom'
 
 const Login: React.FC = memo(() => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const navigate = useNavigate()
 
   const handleLogin = (event: React.FormEvent) => {
     event.preventDefault()
@@ -18,6 +20,10 @@ const Login: React.FC = memo(() => {
         console.log(user)
         setSuccess('Login successful!')
         setError('')
+        // Store auth_uid in localStorage
+        localStorage.setItem('auth_uid', user.uid)
+        // Redirect to job board page
+        navigate('/jobboard')
       })
       .catch((error) => {
         const errorCode = error.code

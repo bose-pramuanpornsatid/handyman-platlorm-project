@@ -3,13 +3,29 @@ import React from 'react';
 interface CardProps {
   jobName: string;
   companyName: string;
-  companyId: string;
   postDate: string;
-  location: string;
-  workPlace: string;
+  location: string | null;
+  workPlace: string | null;
+  applicationStatus?: 'Applied' | 'Reject' | 'Accept'; // Optional prop
 }
 
-const Card: React.FC<CardProps> = ({ jobName, companyName, companyId, postDate, location, workPlace }) => {
+const Card: React.FC<CardProps> = ({ jobName, companyName, postDate, location, workPlace, applicationStatus }) => {
+  const workplaceText = workPlace === '1' ? 'Remote' : 'On-Site';
+
+  // Function to get tag styles based on applicationStatus
+  const getTagStyles = (status: string) => {
+    switch (status) {
+      case 'Applied':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-400';
+      case 'Reject':
+        return 'bg-red-100 text-red-800 border-red-400';
+      case 'Accept':
+        return 'bg-green-100 text-green-800 border-green-400';
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className="p-3 max-w-full bg-white rounded-lg shadow border border-gray-200 hover:bg-gray-100">
       <div className="flex space-x-3">
@@ -29,19 +45,25 @@ const Card: React.FC<CardProps> = ({ jobName, companyName, companyId, postDate, 
             />
           </svg>
         </span>
-        <div className="flex flex-col space-y-1">
-          <h1 className="text-base font-semibold text-gray-700 capitalize ">
-            {jobName}
-          </h1>
-          <h1 className="text-sm text-gray-700 ">
-            {companyName}company name
+        <div className="flex flex-col space-y-1 items-start">
+          <div className="flex flex-wrap items-center space-x-2">
+            <h2 className="text-base font-semibold text-gray-700 capitalize">{jobName}</h2>
+            {applicationStatus && (
+              <span
+                className={`text-xs font-medium px-2.5 py-0.5 rounded border ${getTagStyles(applicationStatus)}`}
+              >
+                {applicationStatus}
+              </span>
+            )}
+          </div>
+          <h1 className="text-sm text-gray-700">
+            {companyName}
           </h1>
         </div>
       </div>
       <div className="flex space-x-1">
-        {/* <p className="mt-2 text-xs text-gray-500 ">Company ID: {companyId}</p> */}
         <p className="mt-2 text-xs text-gray-500 list-disc">{location}</p>
-        <p className="mt-2 text-xs text-gray-500 list-disc">  •  Hybrid{workPlace}</p>
+        <p className="mt-2 text-xs text-gray-500 list-disc">  •  {workplaceText}</p>
         <p className="mt-2 text-xs text-gray-500 list-disc">  •  {postDate}</p>
       </div>
     </div>

@@ -2,12 +2,14 @@ import React, { memo, useState } from 'react'
 import { createUserWithEmailAndPassword } from "firebase/auth"
 import { auth } from '../../main'
 import styles from './index.module.css'
+import { useNavigate } from 'react-router-dom';
 
 const SignUp: React.FC = memo(() => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const navigate = useNavigate();
 
   const handleSignUp = (event: React.FormEvent) => {
     event.preventDefault()
@@ -17,6 +19,10 @@ const SignUp: React.FC = memo(() => {
         const user = userCredential.user
         setSuccess('Sign up successful!')
         setError('')
+        // Store auth_uid in localStorage
+        localStorage.setItem('auth_uid', user.uid)
+        // Redirect to RoleSelection page with auth_uid
+        navigate('/role-selection', { state: { auth_uid: user.uid } });
       })
       .catch((error) => {
         const errorCode = error.code
