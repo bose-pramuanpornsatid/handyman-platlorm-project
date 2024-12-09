@@ -13,9 +13,9 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 const Navbar: React.FC = memo(() => {
   const navigation = [
     { name: 'Job Board', href: '/jobboard' },
-    { name: 'Quiz', href: '/quiz' },
-    { name: 'Company', href: '*' },
-    { name: 'Profile', href: '/profile' },
+    // { name: 'Quiz', href: '/quiz' },
+    // { name: 'Company', href: '*' },
+    { name: 'Dashboard', href: '/profile' },
   ]
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
