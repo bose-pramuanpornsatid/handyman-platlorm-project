@@ -106,7 +106,20 @@ const Profile: React.FC = memo(() => {
       }
 
       const payload = await response.json();
-      setApplicationsWithPostings(payload.result);
+      // Normalize remote_allowed
+      const normalized = payload.result.map(({ application_data, posting_data }) => ({
+        application_data,
+        posting_data: {
+          ...posting_data,
+          remote_allowed:
+            posting_data.remote_allowed === "1" ||
+            posting_data.remote_allowed === "1.0" ||
+            posting_data.remote_allowed === 1
+              ? 1
+              : 0,
+        },
+      }));
+      setApplicationsWithPostings(normalized);
       console.log('Payload:', payload);
     } catch (error) {
       console.error('Error fetching job list:', error);
@@ -206,7 +219,9 @@ const Profile: React.FC = memo(() => {
               <h1 className='text-lg font-bold text-left'>Current Applications</h1>
             </div>
             <div className="grid grid-cols-1 mt-3 gap-3 overflow-y-auto">
-              {applicationsWithPostings.map(({ application_data, posting_data }) => (
+              {applicationsWithPostings.map(({ application_data, posting_data }) => {
+                // console.log(posting_data.remote_allowed)
+                return (
                 <div key={application_data.posting_id}>
                   <Card
                     jobName={posting_data.job_name}
@@ -217,7 +232,7 @@ const Profile: React.FC = memo(() => {
                     applicationStatus={application_data.status}
                   />
                 </div>
-              ))}
+              )})}
             </div>
           </div>
           <div className="w-1/2 p-3">

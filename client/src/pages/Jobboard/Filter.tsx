@@ -4,31 +4,52 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
 interface FilterProps {
   onLocationChange: (query: string) => void; // Callback function to pass location filter updates
+  onWorkTypeChange: (selectedWorkTypes: string[]) => void; // Callback for work type filter updates
 }
 
-const Filter: React.FC = memo(() => {
+const Filter: React.FC<FilterProps> = memo(({ onLocationChange, onWorkTypeChange }) => {
   const [selectedExperience, setSelectedExperience] = useState<string[]>([]);
   const [selectedWorkType, setSelectedWorkType] = useState<string[]>([]);
   const [locationQuery, setLocationQuery] = useState<string>(''); // State for search query
   const [locations, setLocations] = useState<string[]>(['New York', 'San Francisco', 'Los Angeles', 'Chicago', 'Seattle']); // Static location list
 
   const experienceOptions = ['Internship', 'Full-time', 'Part-time'];
-  const workTypeOptions = ['Onsite', 'Remote', 'Hybrid'];
+  const workTypeOptions = ['On-site', 'Remote'];
 
   // Function to handle selections for checkboxes
-  const handleSelection = (selectedList: string[], setter: React.Dispatch<React.SetStateAction<string[]>>, option: string) => {
+  const handleSelection = (
+    selectedList: string[],
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+    option: string
+  ) => {
     setter((prev) =>
       prev.includes(option) ? prev.filter((item) => item !== option) : [...prev, option]
     );
   };
 
-  // Filter locations based on the search query entered in the search bar
   const filteredLocations = locations.filter((loc) =>
     loc.toLowerCase().includes(locationQuery.toLowerCase())
   );
+
   const handleLocationSelect = (location: string) => {
     setLocationQuery(location);
     onLocationChange(location);
+  };
+
+  // Function to clear selections
+  const handleClearSelection = (
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+    clearCallback?: () => void
+  ) => {
+    setter([]);
+    if (clearCallback) {
+      clearCallback();
+    }
+  };
+
+  // Function to apply work type filter
+  const applyWorkTypeFilter = () => {
+    onWorkTypeChange(selectedWorkType);
   };
 
   return (
@@ -73,6 +94,19 @@ const Filter: React.FC = memo(() => {
                       </div>
                     </MenuItem>
                   ))}
+                </div>
+                <div className="flex justify-between p-2">
+                  <button
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                    onClick={() => handleClearSelection(setSelectedExperience)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
+                  >
+                    Show Results
+                  </button>
                 </div>
               </MenuItems>
             )}
@@ -121,6 +155,23 @@ const Filter: React.FC = memo(() => {
                     </MenuItem>
                   ))}
                 </div>
+                <div className="flex justify-between p-2">
+                  <button
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                    onClick={() => {
+                      handleClearSelection(setSelectedWorkType);
+                      onWorkTypeChange([]); // Notify parent to clear work type filter
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
+                    onClick={applyWorkTypeFilter}
+                  >
+                    Show Results
+                  </button>
+                </div>
               </MenuItems>
             )}
           </>
@@ -150,7 +201,7 @@ const Filter: React.FC = memo(() => {
                     type="text"
                     placeholder="Search location"
                     value={locationQuery}
-                                        onChange={(e) => {
+                    onChange={(e) => {
                       setLocationQuery(e.target.value);
                       onLocationChange(e.target.value);
                     }}
@@ -168,6 +219,19 @@ const Filter: React.FC = memo(() => {
                       </div>
                     </MenuItem>
                   ))}
+                </div>
+                <div className="flex justify-between p-2">
+                  <button
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                    onClick={() => setLocationQuery('')}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
+                  >
+                    Show Results
+                  </button>
                 </div>
               </MenuItems>
             )}

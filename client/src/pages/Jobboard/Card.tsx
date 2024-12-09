@@ -5,12 +5,13 @@ interface CardProps {
   companyName: string;
   postDate: string;
   location: string | null;
-  workPlace: string | null;
+  workPlace: number | null;
   applicationStatus?: 'Applied' | 'Reject' | 'Accept'; // Optional prop
 }
 
 const Card: React.FC<CardProps> = ({ jobName, companyName, postDate, location, workPlace, applicationStatus }) => {
-  const workplaceText = workPlace === '1' ? 'Remote' : 'On-Site';
+  const workplaceText = workPlace === 1 ? 'Remote' : 'On-Site';
+  // console.log(companyName + ' : ' + workplaceText);
 
   // Function to get tag styles based on applicationStatus
   const getTagStyles = (status: string) => {
@@ -29,7 +30,7 @@ const Card: React.FC<CardProps> = ({ jobName, companyName, postDate, location, w
   return (
     <div className="p-3 max-w-full bg-white rounded-lg shadow border border-gray-200 hover:bg-gray-100">
       <div className="flex space-x-3">
-        <span className="inline-block p-3 text-blue-500 bg-blue-100 rounded-full">
+        <span className="inline-block p-3 text-blue-500 bg-blue-100 rounded-full w-12 h-12">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-6 h-6"
