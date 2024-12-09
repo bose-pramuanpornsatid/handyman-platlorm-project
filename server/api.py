@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 # from db import *
 from db_simple import *
 from classes import *
+import sqlalchemy  # Ensure sqlalchemy is imported
 
 app = FastAPI()
 pool = connect_with_connector()
@@ -246,3 +247,11 @@ def get_leaderboard():
         res.append(school_result(item[0], item[1], item[2], item[3]))
 
     return { "result": res }
+
+@app.get("/schools")
+def get_schools():
+    insert_stmt = sqlalchemy.text("SELECT school_id, school_name FROM school ORDER BY school_name;")
+    data = db_conn.execute(insert_stmt).fetchall()
+    
+    schools = [{"school_id": row[0], "school_name": row[1]} for row in data]
+    return {"result": schools}
