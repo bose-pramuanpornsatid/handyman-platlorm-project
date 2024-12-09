@@ -44,6 +44,13 @@ interface ApplicationWithPosting {
   posting_data: Posting;
 }
 
+interface LeaderboardEntry {
+  school_id: string;
+  school_name: string;
+  total_score: number;
+  student_names: string;
+}
+
 const Profile: React.FC = memo(() => {
   const [userData, setUserData] = useState<UserData>({
     user_id: null,
@@ -59,6 +66,7 @@ const Profile: React.FC = memo(() => {
   });
 
   const [applicationsWithPostings, setApplicationsWithPostings] = useState<ApplicationWithPosting[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   async function fetchUserDetails() {
     try {
@@ -105,8 +113,23 @@ const Profile: React.FC = memo(() => {
     }
   }
 
+  async function fetchLeaderboard() {
+    try {
+      const response = await fetch('https://pythonapi-995028621724.us-central1.run.app/leaderboard');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setLeaderboard(data.result);
+      console.log('Leaderboard:', data.result);
+    } catch (error) {
+      console.error('Failed to fetch leaderboard:', error);
+    }
+  }
+
   useEffect(() => {
     const fetchData = async () => {
+      await fetchLeaderboard();
       if (userData.auth_uid) {
         await fetchUserDetails();
       }
@@ -116,7 +139,13 @@ const Profile: React.FC = memo(() => {
   }, []);
 
   useEffect(() => {
-    fetchApplicationList()
+    const fetchData = async () => {
+      if (userData.user_id) {
+        await fetchApplicationList()
+      }
+    };
+
+    fetchData();
   }, [userData]);
 
   // Mock function for onEdit
@@ -192,7 +221,7 @@ const Profile: React.FC = memo(() => {
             </div>
           </div>
           <div className="w-1/2 p-3">
-            <Leaderboard/>
+            <Leaderboard leaderboard={leaderboard.slice(0, 5)} />
           </div>
         </div>
       </div>
