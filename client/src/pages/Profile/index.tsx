@@ -52,6 +52,7 @@ interface LeaderboardEntry {
 }
 
 const Profile: React.FC = memo(() => {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData>({
     user_id: null,
     school_id: null,
@@ -161,37 +162,102 @@ const Profile: React.FC = memo(() => {
     fetchData();
   }, [userData]);
 
-  // Mock function for onEdit
+  const handleStatusChange = async (posting_id: number, newStatus: string) => {
+    try {
+      const { user_id } = userData;
+      if (!user_id) {
+        throw new Error('User ID is missing.');
+      }
+
+      // Update the status in the backend
+      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/application/${user_id}/${posting_id}/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update status: ${response.status}`);
+      }
+
+      // Update the state to reflect the new status
+      setApplicationsWithPostings((prevApplications) =>
+        prevApplications.map((application) =>
+          application.application_data.posting_id === posting_id
+            ? {
+                ...application,
+                application_data: {
+                  ...application.application_data,
+                  status: newStatus,
+                },
+              }
+            : application
+        )
+      );
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
+
+  const handleDelete = async (posting_id: number) => {
+    try {
+      const { user_id } = userData;
+      if (!user_id) {
+        throw new Error('User ID is missing.');
+      }
+
+      // Delete the application in the backend
+      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/application/${user_id}/${posting_id}/delete`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete application: ${response.status}`);
+      }
+
+      // Update the state to remove the deleted application
+      setApplicationsWithPostings((prevApplications) =>
+        prevApplications.filter((application) => application.application_data.posting_id !== posting_id)
+      );
+    } catch (error) {
+      console.error('Error deleting application:', error);
+    }
+  };
+
+  // Correct the onEdit function to use navigate properly
   const onEdit = () => {
-    const navigate = useNavigate();
-    navigate('/profile-setup');
+    navigate('/profile-setup'); // Navigate without passing role
   }
+
   return (
     <div className={styles.container}>
-      <h1 className='text-gray-900 text-xl5 font-black'>Hi {userData.user_name}, Welcome Back!</h1>
+      <h1 className='mt-20 text-gray-900 text-xl5 font-black text-left'>Hi {userData.user_name}, Welcome Back!</h1>
       <div className="mx-auto mt-16 max-w-full w-10/12">
+        
+        {/* Title Section for Profile Information and Edit */}
+        <div className="flex items-center mb-4 text-gray-900">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+            <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+          </svg>
+          <h1 className='text-lg font-bold text-left'>Profile</h1>
+        </div>
+
         <div className="flex flex-row gap-8">
           {/* Left Section: Profile Information and Edit */}
           <div className="flex-1 bg-white shadow overflow-visible p-10">
-            <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-3">
               <div>
-                <h3 className="text-sm font-medium text-gray-700">Username</h3>
+                <h3 className="text-base font-semibold text-gray-700">Username</h3>
                 <p className="mt-1 text-sm text-gray-900 break-words">{userData.user_name}</p>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-gray-700">Email</h3>
+                <h3 className="text-base font-semibold text-gray-700">Email</h3>
                 <p className="mt-1 text-sm text-gray-900 break-words">{userData.email}</p>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-gray-700">First Name</h3>
-                <p className="mt-1 text-sm text-gray-900 break-words">{userData.first_name}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-gray-700">Last Name</h3>
-                <p className="mt-1 text-sm text-gray-900 break-words">{userData.last_name}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-gray-700">Location</h3>
+                <h3 className="text-base font-semibold text-gray-700">Skills</h3>
                 <p className="mt-1 text-sm text-gray-900 break-words">{userData.skills}</p>
               </div>
             </div>
@@ -218,6 +284,8 @@ const Profile: React.FC = memo(() => {
               </svg>
               <h1 className='text-lg font-bold text-left'>Current Applications</h1>
             </div>
+            {/* Description Section */}
+            <h2 className="text-sm text-gray-900 mb-4 text-left">List of jobs you have applied</h2>
             <div className="grid grid-cols-1 mt-3 gap-3 overflow-y-auto">
               {applicationsWithPostings.map(({ application_data, posting_data }) => {
                 // console.log(posting_data.remote_allowed)
@@ -230,6 +298,9 @@ const Profile: React.FC = memo(() => {
                     location={posting_data.location}
                     workPlace={posting_data.remote_allowed}
                     applicationStatus={application_data.status}
+                    showActions={true} // Pass prop to show actions
+                    onStatusChange={(newStatus) => handleStatusChange(application_data.posting_id, newStatus)}
+                    onDelete={() => handleDelete(application_data.posting_id)}
                   />
                 </div>
               )})}
