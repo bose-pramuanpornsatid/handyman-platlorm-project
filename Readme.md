@@ -108,6 +108,14 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
+## Database Design
+
+The database design for Jobkinator includes several entities and relationships that capture the core functionalities of the application. The UML diagram below provides a visual representation of these entities and their relationships.
+
+![UML Diagram](docs/UML.png)
+
+For a detailed explanation of the database design, including assumptions, normalization, and logical design, please refer to the [Database Design Document](docs/Stage2DatabaseDesign.md).
+
 ## Future Plans
 
 We want to 'gamify' the process of applying to Full-Time Positions / Internships. This is accomplished through having people build their own internship 'personality' representing which jobs or technical domains they are interested in and using that to create a custom set of filters for jobs that they are interested in. We can also let people access the interface directly using the filter to determine which jobs they want.
