@@ -5,7 +5,14 @@ Jobkinator is a web application designed to streamline and gamify the often daun
 
 Built using React and TypeScript for the user interface and FastAPI for handling API requests to an SQL database, it provides users with tools to search and filter job listings, track their applications, and maintain motivation through features like streaks and leaderboards. These gamified elements reward users for their consistency, creating a sense of achievement and fostering healthy competition to encourage daily engagement. By integrating advanced SQL queries and robust backend functionalities, Jobkinator simplifies the job hunting process while making it more interactive and engaging. Ultimately, the application aims to increase users' chances of landing their desired roles by fostering persistence and enthusiasm in the application process.
 
-## Folder Structure
+
+## Information for Collaborators:
+
+Clone the repository using this url: 
+
+```https://github.com/bose-pramuanpornsatid/jobkinator-platform-project.git```
+
+### Folder Structure
 Jobkinator\
 ├- client\
 ├- data_import\
@@ -15,17 +22,91 @@ Jobkinator\
 | folder      | info                                                      |
 | ----------- | --------------------------------------------------------- |
 | client      | Frontend (Vite + React + Typescript)                      |
-| data_import | Jupyter Notebook (Python)                                 |
+| data_import | Data Cleaning + Imports (Jupyter Notebook)                |
 | docs        | Project Documents (Proposal + Database Design + API Docs) |
 | server      | Backend (Python + FastAPI)                                |
 
+### Client (Frontend) Installation Instruction
 
-## Information for Collaborators:
+0. Install npm: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+1. Navigate to client 
+```bash
+cd client
+```
 
-Clone the repository using this url: 
+2. Install npm dependencies
+```bash
+npm install
+```
 
-```https://github.com/bose-pramuanpornsatid/jobkinator-platform-project.git```
+3. Running the development server
+```bash
+npm run dev
+```
 
+### Server (Backend) Installation Instruction
+0. Install Python: https://www.python.org/downloads/
+1. Navigate to server
+```bash
+cd server
+```
+
+2. Create a virtual environment
+```bash
+python -m venv venv
+```
+
+3. Activate the virtual environment
+   - On Windows:
+   ```bash
+   venv\Scripts\activate
+   ```
+   - On macOS/Linux:
+   ```bash
+   source venv/bin/activate
+   ```
+
+4. Install the required dependencies
+```bash
+pip install -r requirements.txt
+```
+
+5. Running the FastAPI server
+```bash
+uvicorn main:app --reload
+```
+
+### data_import (Data Cleaning + Imports) Installation Instruction
+0. Install Python: https://www.python.org/downloads/
+1. Navigate to data_import
+```bash
+cd data_import
+```
+
+2. Create a virtual environment
+```bash
+python -m venv venv
+```
+
+3. Activate the virtual environment
+   - On Windows:
+   ```bash
+   venv\Scripts\activate
+   ```
+   - On macOS/Linux:
+   ```bash
+   source venv/bin/activate
+   ```
+
+4. Install the required dependencies
+```bash
+pip install -r requirements.txt
+```
+
+5. Run the Jupyter Notebook
+```bash
+jupyter notebook
+```
 
 ## Future Plans
 
