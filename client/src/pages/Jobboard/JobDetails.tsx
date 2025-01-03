@@ -34,7 +34,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobName, companyId, postDate, l
   };
 
   async function fetchCompany() {
-    const apiUrl = `https://pythonapi-995028621724.us-central1.run.app/company/${companyId}`;
+    const apiUrl = `https://jobkinator-server-995028621724.us-central1.run.app/company/${companyId}`;
     const response = await fetch(apiUrl, {
       method: 'GET',
       redirect: 'follow',

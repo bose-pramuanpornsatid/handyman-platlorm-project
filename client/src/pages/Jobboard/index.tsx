@@ -72,7 +72,7 @@ const Jobboard: React.FC = memo(() => {
     setUserData({ ...userData, current_streak: newStreak });
 
     try {
-      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/user/${userData.user_id}/update`, {
+      const response = await fetch(`https://jobkinator-server-995028621724.us-central1.run.app/user/${userData.user_id}/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const Jobboard: React.FC = memo(() => {
     }
 
     try {
-      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/application/create`, {
+      const response = await fetch(`https://jobkinator-server-995028621724.us-central1.run.app/application/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ const Jobboard: React.FC = memo(() => {
   // Fetch job list from the backend API
   async function fetchPostingList() {
     try {
-      const apiUrl = 'https://pythonapi-995028621724.us-central1.run.app/posting';
+      const apiUrl = 'https://jobkinator-server-995028621724.us-central1.run.app/posting';
       const response = await fetch(apiUrl, {
         method: 'GET',
         redirect: 'follow',
@@ -160,7 +160,7 @@ const Jobboard: React.FC = memo(() => {
   // Fetch user details from the backend API
   async function fetchUserDetails() {
     try {
-      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/user/auth/${userData.auth_uid}`)
+      const response = await fetch(`https://jobkinator-server-995028621724.us-central1.run.app/user/auth/${userData.auth_uid}`)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -208,7 +208,7 @@ const Jobboard: React.FC = memo(() => {
   // Fetch detailed job data from the API
   const handleCardClick = async (postingId: string) => {
     try {
-      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/posting/${postingId}`);
+      const response = await fetch(`https://jobkinator-server-995028621724.us-central1.run.app/posting/${postingId}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

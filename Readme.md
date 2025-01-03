@@ -10,7 +10,7 @@ Built using React and TypeScript for the user interface and FastAPI for handling
 
 Clone the repository using this url: 
 
-```https://github.com/bose-pramuanpornsatid/jobkinator-platform-project.git```
+`https://github.com/bose-pramuanpornsatid/jobkinator-platform-project.git`
 
 ### Folder Structure
 Jobkinator\

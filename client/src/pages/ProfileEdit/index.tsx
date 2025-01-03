@@ -43,7 +43,7 @@ const ProfileEdit: React.FC = () => {
   // Define the fetchSchools function
   const fetchSchools = async () => {
     try {
-      const response = await fetch('https://pythonapi-995028621724.us-central1.run.app/schools');
+      const response = await fetch('https://jobkinator-server-995028621724.us-central1.run.app/schools');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -56,7 +56,7 @@ const ProfileEdit: React.FC = () => {
 
   const fetchUserData = async (authUid: string) => {
     try {
-      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/user/auth/${authUid}`);
+      const response = await fetch(`https://jobkinator-server-995028621724.us-central1.run.app/user/auth/${authUid}`);
       if (response.ok) {
         const data = await response.json();
         console.log('User data:', data.message);
@@ -118,7 +118,7 @@ const ProfileEdit: React.FC = () => {
 
     try {
       // Use update API with user_id
-      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/user/${userData.user_id}/update`, {
+      const response = await fetch(`https://jobkinator-server-995028621724.us-central1.run.app/user/${userData.user_id}/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

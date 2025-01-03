@@ -42,7 +42,7 @@ const ProfileSetup: React.FC = () => {
   // Define the fetchSchools function
   const fetchSchools = async () => {
     try {
-      const response = await fetch('https://pythonapi-995028621724.us-central1.run.app/schools');
+      const response = await fetch('https://jobkinator-server-995028621724.us-central1.run.app/schools');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -102,7 +102,7 @@ const ProfileSetup: React.FC = () => {
 
     try {
       // Use only create API
-      const response = await fetch('https://pythonapi-995028621724.us-central1.run.app/user/create', {
+      const response = await fetch('https://jobkinator-server-995028621724.us-central1.run.app/user/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

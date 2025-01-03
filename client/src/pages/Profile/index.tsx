@@ -81,7 +81,7 @@ const Profile: React.FC = memo(() => {
         const email = user.email || '';
         console.log('Email:', email);
 
-        const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/user/auth/${userData.auth_uid}`)
+        const response = await fetch(`https://jobkinator-server-995028621724.us-central1.run.app/user/auth/${userData.auth_uid}`)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -96,7 +96,7 @@ const Profile: React.FC = memo(() => {
 
   async function fetchApplicationList() {
     try {
-      const apiUrl = `https://pythonapi-995028621724.us-central1.run.app/user/${userData.user_id}/applications`;
+      const apiUrl = `https://jobkinator-server-995028621724.us-central1.run.app/user/${userData.user_id}/applications`;
       const response = await fetch(apiUrl, {
         method: 'GET',
         redirect: 'follow',
@@ -129,7 +129,7 @@ const Profile: React.FC = memo(() => {
 
   async function fetchLeaderboard() {
     try {
-      const response = await fetch('https://pythonapi-995028621724.us-central1.run.app/leaderboard');
+      const response = await fetch('https://jobkinator-server-995028621724.us-central1.run.app/leaderboard');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -170,7 +170,7 @@ const Profile: React.FC = memo(() => {
       }
 
       // Update the status in the backend
-      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/application/${user_id}/${posting_id}/update`, {
+      const response = await fetch(`https://jobkinator-server-995028621724.us-central1.run.app/application/${user_id}/${posting_id}/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -209,7 +209,7 @@ const Profile: React.FC = memo(() => {
       }
 
       // Delete the application in the backend
-      const response = await fetch(`https://pythonapi-995028621724.us-central1.run.app/application/${user_id}/${posting_id}/delete`, {
+      const response = await fetch(`https://jobkinator-server-995028621724.us-central1.run.app/application/${user_id}/${posting_id}/delete`, {
         method: 'GET',
       });
 

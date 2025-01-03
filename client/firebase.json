@@ -9,7 +9,7 @@
     "rewrites": [
       {
         "source": "/api/**",
-        "destination": "https://pythonapi-995028621724.us-central1.run.app/"
+        "destination": "https://jobkinator-server-995028621724.us-central1.run.app/"
       },
       {
         "source": "**",

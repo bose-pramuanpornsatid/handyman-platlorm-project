@@ -17,7 +17,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'https://pythonapi-995028621724.us-central1.run.app',
+        target: 'https://jobkinator-server-995028621724.us-central1.run.app',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
