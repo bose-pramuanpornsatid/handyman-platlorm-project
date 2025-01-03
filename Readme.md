@@ -5,6 +5,10 @@ Jobkinator is a web application designed to streamline and gamify the often daun
 
 Built using React and TypeScript for the user interface and FastAPI for handling API requests to an SQL database, it provides users with tools to search and filter job listings, track their applications, and maintain motivation through features like streaks and leaderboards. These gamified elements reward users for their consistency, creating a sense of achievement and fostering healthy competition to encourage daily engagement. By integrating advanced SQL queries and robust backend functionalities, Jobkinator simplifies the job hunting process while making it more interactive and engaging. Ultimately, the application aims to increase users' chances of landing their desired roles by fostering persistence and enthusiasm in the application process.
 
+|                                           |                                            |
+| ----------------------------------------- | ------------------------------------------ |
+| ![](docs/jobkinator_web_app_profile.jpg) | ![](docs/jobkinator_web_app_jobboard.jpg) |
+
 
 ## Information for Collaborators:
 
